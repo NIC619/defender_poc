@@ -16,13 +16,9 @@ const INFURA_TOKEN = process.env.INFURA_TOKEN || ""
 
 module.exports = {
   networks: {
-    hardhat: {
-      chainId: 1,
-      accounts,
-    },
     goerli: {
       chainId: 5,
-      url: `https://ropsten.infura.io/v3/${INFURA_TOKEN}`,
+      url: `https://goerli.infura.io/v3/${INFURA_TOKEN}`,
       accounts,
     },
   },
