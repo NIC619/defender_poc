@@ -23,9 +23,9 @@
 ## Deployed contract addresses
 
 - `UpgradeProxy`
-    - `0x26a93448dFe50f97caBe9FFb3D9a23F6500d9c3A`
+    - `0x9b8549151C973b4318Bd041d1A31d4C193d5f2CA`
 - `UpgradeProxyImplementation`
-    - `0xC01ff08c44Da3425bbac26c48958CE99cAa2F798`
+    - `0x1489a475Bd4132979fB032fD265eE5563570C8F7`
 - `OneRoleAccessControl`
     - `0x12b1cCd7323b4333C62fE26667c3594f6F247BbF`
 - `OneRoleAccessControlWithTimeLock`

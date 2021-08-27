@@ -1,8 +1,9 @@
 import { ethers } from "hardhat"
-import { getDeployer } from "./utils"
+import { getDeployer, getOperator } from "./utils"
 
 async function main() {
     const deployer = getDeployer()
+    const operator = getOperator()
 
     // Deploying UpgradeProxyImplementation
     console.log("Deploying UpgradeProxyImplementation...")
@@ -14,12 +15,12 @@ async function main() {
 
     // Deploying UpgradeProxy
     console.log("Deploying UpgradeProxy...")
-    const UpgradeProxy = await (
+    let UpgradeProxy = await (
         await ethers.getContractFactory("TransparentUpgradeableProxy", deployer)
     ).deploy(
         UpgradeProxyImplementation.address,
         deployer.address,
-        UpgradeProxyImplementation.interface.encodeFunctionData("initialize", [])
+        UpgradeProxyImplementation.interface.encodeFunctionData("initialize", [operator.address])
     )
     await UpgradeProxy.deployTransaction.wait()
     console.log(`UpgradeProxy contract address: ${UpgradeProxy.address}`)
@@ -31,6 +32,11 @@ async function main() {
     const admin = await UpgradeProxy.connect(deployer).callStatic.admin()
     if (admin !== deployer.address) {
         throw new Error(`Wrong admin: ${admin}`)
+    }
+    UpgradeProxy = UpgradeProxyImplementation.attach(UpgradeProxy.address)
+    const operatorStored = await UpgradeProxy.connect(operator).callStatic.operator()
+    if (operatorStored !== operator.address) {
+        throw new Error(`Wrong operator: ${operatorStored}`)
     }
 }
 
