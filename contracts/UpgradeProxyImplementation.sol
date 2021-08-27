@@ -33,8 +33,11 @@ contract UpgradeProxyImplementation {
      *              Constructor and init functions               *
      *************************************************************/
     /// @dev Replacing constructor and initialize the contract. This function should only be called once.
-    function initialize() external {
+    function initialize(address _operator) external {
         require(keccak256(abi.encodePacked(version)) == keccak256(abi.encodePacked("")), "UserProxy: not upgrading from version zero");
+
+        operator = _operator;
+        emit TransferOwnership(_operator);
 
         // Upgrade version
         version = "1.2.3";
