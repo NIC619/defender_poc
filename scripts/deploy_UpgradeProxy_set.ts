@@ -26,11 +26,11 @@ async function main() {
 
     const implementation = await UpgradeProxy.connect(deployer).callStatic.implementation()
     if (implementation !== UpgradeProxyImplementation.address) {
-        throw new Error("Wrong implementation")
+        throw new Error(`Wrong implementation: ${implementation}`)
     }
     const admin = await UpgradeProxy.connect(deployer).callStatic.admin()
     if (admin !== deployer.address) {
-        throw new Error("Wrong admin")
+        throw new Error(`Wrong admin: ${admin}`)
     }
 }
 
