@@ -22,6 +22,10 @@ export const defaultParam = ethers.BigNumber.from(199)
 
 export const defaultImportantDependency = "0xdeaddeaddeaddeaddeaddeaddeaddeaddeaddead"
 
-export const upgradeProxyAddr = "0x26a93448dFe50f97caBe9FFb3D9a23F6500d9c3A"
+export const upgradeProxyAddr = "0x5827B6815Fdb97774Ea31E790c8503e7B9014917"
 
-export const upgradeProxyImplementationAddr = "0xC01ff08c44Da3425bbac26c48958CE99cAa2F798"
+export const upgradeProxyImplementationAddr = "0x77a6302d81154603Ac32d031275E9C9103B50D29"
+
+export const oneRoleAccessControlAddr = ""
+
+export const oneRoleAccessControlWithTimeLockAddr = ""
