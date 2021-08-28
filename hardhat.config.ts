@@ -16,9 +16,14 @@ const INFURA_TOKEN = process.env.INFURA_TOKEN || ""
 
 module.exports = {
   networks: {
-    goerli: {
-      chainId: 5,
-      url: `https://goerli.infura.io/v3/${INFURA_TOKEN}`,
+    // goerli: {
+    //   chainId: 5,
+    //   url: `https://goerli.infura.io/v3/${INFURA_TOKEN}`,
+    //   accounts,
+    // },
+    kovan: {
+      chainId: 42,
+      url: `https://eth-kovan.alchemyapi.io/v2/${ALCHEMY_TOKEN}`,
       accounts,
     },
   },
