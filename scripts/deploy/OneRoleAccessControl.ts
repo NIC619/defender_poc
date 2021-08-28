@@ -1,5 +1,5 @@
 import { ethers } from "hardhat"
-import { defaultImportantDependency, defaultParam, getDeployer, getOperator } from "./utils"
+import { defaultImportantDependency, defaultParam, getDeployer, getOperator } from "../utils"
 
 async function main() {
     const deployer = getDeployer()

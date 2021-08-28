@@ -34,7 +34,7 @@ async function main() {
         throw new Error(`Wrong admin: ${admin}`)
     }
     UpgradeProxy = UpgradeProxyImplementation.attach(UpgradeProxy.address)
-    const operatorStored = await UpgradeProxy.connect(operator).callStatic.operator()
+    const operatorStored = await UpgradeProxy.callStatic.operator()
     if (operatorStored !== operator.address) {
         throw new Error(`Wrong operator: ${operatorStored}`)
     }
