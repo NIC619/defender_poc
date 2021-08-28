@@ -18,7 +18,7 @@
 ### Deploy contracts
 
 - Deploy `UpgradeProxy` and `UpgradeProxyImplementation` contracts
-    - `npx hardhat run scripts/deploy_UpgradeProxy_set.ts --network goerli`
+    - `npx hardhat run scripts/deploy_UpgradeProxy_set.ts --network kovan`
 
 ## Deployed contract addresses
 

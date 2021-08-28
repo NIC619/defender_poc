@@ -18,6 +18,24 @@ export const getOperator = () => {
     return operator
 }
 
+export const getSubOperator = () => {
+    const subOperatorPrivateKey = process.env.SUB_OPERATOR_PRIVATE_KEY
+    if (subOperatorPrivateKey === undefined) throw Error("Sub operator private key not provided")
+
+    const operator = new ethers.Wallet(subOperatorPrivateKey, ethers.provider)
+
+    return operator
+}
+
+export const getAttacker = () => {
+    const attackerPrivateKey = process.env.ATTACKER_PRIVATE_KEY
+    if (attackerPrivateKey === undefined) throw Error("Sub operator private key not provided")
+
+    const operator = new ethers.Wallet(attackerPrivateKey, ethers.provider)
+
+    return operator
+}
+
 export const defaultParam = ethers.BigNumber.from(199)
 
 export const defaultImportantDependency = "0xdeaddeaddeaddeaddeaddeaddeaddeaddeaddead"
