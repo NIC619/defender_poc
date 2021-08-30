@@ -40,6 +40,8 @@ export const defaultParam = ethers.BigNumber.from(199)
 
 export const defaultImportantDependency = "0xdeaddeaddeaddeaddeaddeaddeaddeaddeaddead"
 
+export const callProxyAddr = "0x1E8b65D0562f89A1Bd951ADD5354d9a374dfe550"
+
 export const upgradeProxyAddr = "0x5827B6815Fdb97774Ea31E790c8503e7B9014917"
 
 export const upgradeProxyImplementationAddr = "0x77a6302d81154603Ac32d031275E9C9103B50D29"
