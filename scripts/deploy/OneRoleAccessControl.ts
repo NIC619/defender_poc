@@ -22,7 +22,7 @@ async function main() {
         throw new Error(`Wrong operator: ${operatorStored}`)
     }
     const param = await OneRoleAccessControl.connect(deployer).callStatic.someParam()
-    if (param !== defaultParam) {
+    if (ethers.BigNumber.from(param) !== defaultParam) {
         throw new Error(`Wrong param: ${param}`)
     }
     const dependency = await OneRoleAccessControl.connect(deployer).callStatic.importantDepedency()

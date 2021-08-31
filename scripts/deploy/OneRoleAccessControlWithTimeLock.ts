@@ -1,5 +1,5 @@
 import { ethers } from "hardhat"
-import { getDeployer, getOperator } from "./utils"
+import { getDeployer, getOperator } from "../utils"
 
 async function main() {
     const deployer = getDeployer()

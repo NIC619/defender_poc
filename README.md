@@ -35,6 +35,6 @@
 - `UpgradeProxyImplementation`
     - `0x77a6302d81154603Ac32d031275E9C9103B50D29`
 - `OneRoleAccessControl`
-    - ``
+    - `0x592360B99910Fa8Fc73b49dB32155BCeEB8E4F12`
 - `OneRoleAccessControlWithTimeLock`
-    - ``
+    - `0x9D1F313beb8342673E4f90a4c7Dd04C292984208`
