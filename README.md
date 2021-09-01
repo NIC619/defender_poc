@@ -26,6 +26,23 @@
 - Deploy `OneRoleAccessControlWithTimeLock` contract
     - `npx hardhat run scripts/deploy/OneRoleAccessControlWithTimeLock.ts --network kovan`
 
+### Set up Sentinel instances
+TODO
+
+### Run scripts to invoke targeted functions
+
+- Transfer ownership, for example
+    - `OneRoleAccessControl.transferOwner`
+        - `npx hardhat run scripts/transferRoles/transferOwner_OneRoleAccessControl.ts --network kovan`
+    - `OneRoleAccessControlWithTimeLock.setNewOperator`
+        - `npx hardhat run scripts/transferRoles/setNewOperator_OneRoleAccessControlWithTimeLock.ts --network kovan`
+- Contract maintenance, for example
+    - `OneRoleAccessControlWithTimeLock.blacklist`
+        - `npx hardhat run scripts/maintenance/blacklist.ts --network kovan`
+- Approving spender, for example
+    - `OneRoleAccessControlWithTimeLock.authorize`
+        - `npx hardhat run scripts/allowance/authorize.ts --network kovan`
+
 ## Deployed contract addresses
 
 - `CallProxy`
