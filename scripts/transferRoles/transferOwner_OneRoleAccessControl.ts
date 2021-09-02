@@ -1,24 +1,19 @@
 import { ethers } from "hardhat"
-import { getOperator, getSubOperator, oneRoleAccessControlAddr } from "../utils"
+import { getContractAndOperator, getOperator, getSubOperator } from "../utils"
 
 async function main() {
     const operator = getOperator()
     const subOperator = getSubOperator()
 
-    const OneRoleAccessControl = await ethers.getContractAt("OneRoleAccessControl", oneRoleAccessControlAddr)
-    const operatorStored = await OneRoleAccessControl.callStatic.operator()
+    const [OneRoleAccessControl, contractOperator] = await getContractAndOperator("OneRoleAccessControl")
 
-    let tx, actualOperator, newOperatorAddr
-    if (operatorStored == operator.address) {
-        actualOperator = operator
+    let tx, newOperatorAddr
+    if (contractOperator.address == operator.address) {
         newOperatorAddr = subOperator.address
-    } else if (operatorStored == subOperator.address) {
-        actualOperator = subOperator
+    } else if (contractOperator.address == subOperator.address) {
         newOperatorAddr = operator.address
-    } else {
-        throw new Error(`Wrong operator: ${operatorStored}`)
     }
-    tx = await OneRoleAccessControl.connect(actualOperator).transferOwnership(newOperatorAddr)
+    tx = await OneRoleAccessControl.connect(contractOperator).transferOwnership(newOperatorAddr)
     console.log(`transferOwnership tx sent: ${tx.hash}`)
     await tx.wait()
 }

@@ -1,13 +1,9 @@
 import {  ethers } from "hardhat"
 import { default as prompts } from "prompts"
-import { getOperator, getSubOperator, oneRoleAccessControlWithTimeLockAddr } from "../utils"
+import { getContractAndOperator } from "../utils"
 
 async function main() {
-    const operator = getOperator()
-    const subOperator = getSubOperator()
-
-    const OneRoleAccessControlWithTimeLock = await ethers.getContractAt("OneRoleAccessControlWithTimeLock", oneRoleAccessControlWithTimeLockAddr)
-    const operatorStored = await OneRoleAccessControlWithTimeLock.callStatic.operator()
+    const [OneRoleAccessControlWithTimeLock, contractOperator] = await getContractAndOperator("OneRoleAccessControlWithTimeLock")
 
     const promptTokenResult = await prompts(
         {
@@ -24,15 +20,8 @@ async function main() {
     )
     const newToken = promptTokenResult.tokenAddr
 
-    let tx, actualOperator
-    if (operatorStored == operator.address) {
-        actualOperator = operator
-    } else if (operatorStored == subOperator.address) {
-        actualOperator = subOperator
-    } else {
-        throw new Error(`Wrong operator: ${operatorStored}`)
-    }
-    tx = await OneRoleAccessControlWithTimeLock.connect(actualOperator).blacklist([newToken], [true])
+    let tx
+    tx = await OneRoleAccessControlWithTimeLock.connect(contractOperator).blacklist([newToken], [true])
     console.log(`blacklist tx sent: ${tx.hash}`)
     await tx.wait()
 

@@ -27,6 +27,35 @@ export const getSubOperator = () => {
     return operator
 }
 
+export const getContractAndOperator = async (contractName: string) => {
+    const operator = getOperator()
+    const subOperator = getSubOperator()
+
+    let contractAddr, contract, operatorStored
+    if (contractName == "UpgradeProxyImplementation") {
+        contractAddr = upgradeProxyAddr
+    } else if (contractName == "OneRoleAccessControl") {
+        contractAddr = oneRoleAccessControlAddr
+    } else if (contractName == "OneRoleAccessControlWithTimeLock") {
+        contractAddr = oneRoleAccessControlWithTimeLockAddr
+    } else {
+        throw Error(`Invalid contract name: ${contractName}`)
+    }
+    contract = await ethers.getContractAt(contractName, contractAddr)
+    operatorStored = await contract.callStatic.operator()
+
+    let contractOperator
+    if (operatorStored == operator.address) {
+        contractOperator = operator
+    } else if (operatorStored == subOperator.address) {
+        contractOperator = subOperator
+    } else {
+        throw new Error(`Wrong operator: ${operatorStored}`)
+    }
+ 
+    return [contract, contractOperator]
+}
+
 export const getAttacker = () => {
     const attackerPrivateKey = process.env.ATTACKER_PRIVATE_KEY
     if (attackerPrivateKey === undefined) throw Error("Sub operator private key not provided")

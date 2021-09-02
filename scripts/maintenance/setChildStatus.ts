@@ -1,13 +1,9 @@
 import {  ethers } from "hardhat"
 import { default as prompts } from "prompts"
-import { getOperator, getSubOperator, upgradeProxyAddr } from "../utils"
+import { getContractAndOperator } from "../utils"
 
 async function main() {
-    const operator = getOperator()
-    const subOperator = getSubOperator()
-
-    const UpgradeProxy = await ethers.getContractAt("UpgradeProxyImplementation", upgradeProxyAddr, operator)
-    const operatorStored = await UpgradeProxy.callStatic.operator()
+    const [UpgradeProxy, contractOperator] = await getContractAndOperator("UpgradeProxyImplementation")
 
     const promptStatusResult = await prompts(
         {
@@ -24,15 +20,8 @@ async function main() {
     )
     const newChilStatus = promptStatusResult.childStatus
 
-    let tx, actualOperator
-    if (operatorStored == operator.address) {
-        actualOperator = operator
-    } else if (operatorStored == subOperator.address) {
-        actualOperator = subOperator
-    } else {
-        throw new Error(`Wrong operator: ${operatorStored}`)
-    }
-    tx = await UpgradeProxy.connect(actualOperator).setChildStatus(newChilStatus)
+    let tx
+    tx = await UpgradeProxy.connect(contractOperator).setChildStatus(newChilStatus)
     console.log(`setChildStatus tx sent: ${tx.hash}`)
     await tx.wait()
 
