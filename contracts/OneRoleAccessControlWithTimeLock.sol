@@ -46,7 +46,7 @@ contract OneRoleAccessControlWithTimeLock {
         require(pendingOperator == msg.sender, "Spender: only nominated one can accept as new operator");
         operator = pendingOperator;
         pendingOperator = address(0);
-        emit TransferOwnership(pendingOperator);
+        emit TransferOwnership(msg.sender);
     }
 
     /************************************************************
