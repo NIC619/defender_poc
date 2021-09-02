@@ -24,14 +24,15 @@ async function main() {
     )
     const newToken = promptTokenResult.tokenAddr
 
-    let tx
+    let tx, actualOperator
     if (operatorStored == operator.address) {
-        tx = await OneRoleAccessControlWithTimeLock.connect(operator).blacklist([newToken], [true])
+        actualOperator = operator
     } else if (operatorStored == subOperator.address) {
-        tx = await OneRoleAccessControlWithTimeLock.connect(subOperator).blacklist([newToken], [true])
+        actualOperator = subOperator
     } else {
         throw new Error(`Wrong operator: ${operatorStored}`)
     }
+    tx = await OneRoleAccessControlWithTimeLock.connect(actualOperator).blacklist([newToken], [true])
     console.log(`blacklist tx sent: ${tx.hash}`)
     await tx.wait()
 

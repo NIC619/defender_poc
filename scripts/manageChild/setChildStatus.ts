@@ -24,14 +24,15 @@ async function main() {
     )
     const newChilStatus = promptStatusResult.childStatus
 
-    let tx
+    let tx, actualOperator
     if (operatorStored == operator.address) {
-        tx = await UpgradeProxy.connect(operator).setChildStatus(newChilStatus)
+        actualOperator = operator
     } else if (operatorStored == subOperator.address) {
-        tx = await UpgradeProxy.connect(subOperator).setChildStatus(newChilStatus)
+        actualOperator = subOperator
     } else {
         throw new Error(`Wrong operator: ${operatorStored}`)
     }
+    tx = await UpgradeProxy.connect(actualOperator).setChildStatus(newChilStatus)
     console.log(`setChildStatus tx sent: ${tx.hash}`)
     await tx.wait()
 

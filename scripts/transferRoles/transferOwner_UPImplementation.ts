@@ -8,14 +8,17 @@ async function main() {
     const UpgradeProxy = await ethers.getContractAt("UpgradeProxyImplementation", upgradeProxyAddr)
     const operatorStored = await UpgradeProxy.callStatic.operator()
 
-    let tx
+    let tx, actualOperator, newOperatorAddr
     if (operatorStored == operator.address) {
-        tx = await UpgradeProxy.connect(operator).transferOwnership(subOperator.address)
+        actualOperator = operator
+        newOperatorAddr = subOperator.address
     } else if (operatorStored == subOperator.address) {
-        tx = await UpgradeProxy.connect(subOperator).transferOwnership(operator.address)
+        actualOperator = subOperator
+        newOperatorAddr = operator.address
     } else {
         throw new Error(`Wrong operator: ${operatorStored}`)
     }
+    tx = await UpgradeProxy.connect(actualOperator).transferOwnership(newOperatorAddr)
     console.log(`transferOwnership tx sent: ${tx.hash}`)
     await tx.wait()
 }

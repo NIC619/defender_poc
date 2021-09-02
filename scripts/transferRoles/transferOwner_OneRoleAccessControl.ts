@@ -8,14 +8,17 @@ async function main() {
     const OneRoleAccessControl = await ethers.getContractAt("OneRoleAccessControl", oneRoleAccessControlAddr)
     const operatorStored = await OneRoleAccessControl.callStatic.operator()
 
-    let tx
+    let tx, actualOperator, newOperatorAddr
     if (operatorStored == operator.address) {
-        tx = await OneRoleAccessControl.connect(operator).transferOwnership(subOperator.address)
+        actualOperator = operator
+        newOperatorAddr = subOperator.address
     } else if (operatorStored == subOperator.address) {
-        tx = await OneRoleAccessControl.connect(subOperator).transferOwnership(operator.address)
+        actualOperator = subOperator
+        newOperatorAddr = operator.address
     } else {
         throw new Error(`Wrong operator: ${operatorStored}`)
     }
+    tx = await OneRoleAccessControl.connect(actualOperator).transferOwnership(newOperatorAddr)
     console.log(`transferOwnership tx sent: ${tx.hash}`)
     await tx.wait()
 }

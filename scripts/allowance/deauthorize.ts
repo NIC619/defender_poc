@@ -24,14 +24,15 @@ async function main() {
     )
     const spender = promptSpenderResult.spenderAddr
 
-    let tx
+    let tx, actualOperator
     if (operatorStored == operator.address) {
-        tx = await OneRoleAccessControlWithTimeLock.connect(operator).deauthorize([spender])
+        actualOperator = operator
     } else if (operatorStored == subOperator.address) {
-        tx = await OneRoleAccessControlWithTimeLock.connect(subOperator).deauthorize([spender])
+        actualOperator = subOperator
     } else {
         throw new Error(`Wrong operator: ${operatorStored}`)
     }
+    tx = await OneRoleAccessControlWithTimeLock.connect(actualOperator).deauthorize([spender])
     console.log(`deauthorize tx sent: ${tx.hash}`)
     await tx.wait()
 

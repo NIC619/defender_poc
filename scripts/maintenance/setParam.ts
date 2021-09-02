@@ -24,14 +24,15 @@ async function main() {
     )
     const newParam = promptParamResult.param
 
-    let tx
+    let tx, actualOperator
     if (operatorStored == operator.address) {
-        tx = await OneRoleAccessControl.connect(operator).setSomeParam(newParam)
+        actualOperator = operator
     } else if (operatorStored == subOperator.address) {
-        tx = await OneRoleAccessControl.connect(subOperator).setSomeParam(newParam)
+        actualOperator = subOperator
     } else {
         throw new Error(`Wrong operator: ${operatorStored}`)
     }
+    tx = await OneRoleAccessControl.connect(actualOperator).setSomeParam(newParam)
     console.log(`setSomeParam tx sent: ${tx.hash}`)
     await tx.wait()
 

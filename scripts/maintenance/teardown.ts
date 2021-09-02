@@ -8,14 +8,15 @@ async function main() {
     const OneRoleAccessControlWithTimeLock = await ethers.getContractAt("OneRoleAccessControlWithTimeLock", oneRoleAccessControlWithTimeLockAddr)
     const operatorStored = await OneRoleAccessControlWithTimeLock.callStatic.operator()
 
-    let tx
+    let tx, actualOperator
     if (operatorStored == operator.address) {
-        tx = await OneRoleAccessControlWithTimeLock.connect(operator).teardown()
+        actualOperator = operator
     } else if (operatorStored == subOperator.address) {
-        tx = await OneRoleAccessControlWithTimeLock.connect(subOperator).teardown()
+        actualOperator = subOperator
     } else {
         throw new Error(`Wrong operator: ${operatorStored}`)
     }
+    tx = await OneRoleAccessControlWithTimeLock.connect(actualOperator).teardown()
     console.log(`teardown tx sent: ${tx.hash}`)
     await tx.wait()
 }

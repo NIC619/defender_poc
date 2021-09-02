@@ -24,14 +24,15 @@ async function main() {
     )
     const newDependency = promptDependencyResult.importantDepedencyAddr
 
-    let tx
+    let tx, actualOperator
     if (operatorStored == operator.address) {
-        tx = await OneRoleAccessControl.connect(operator).upgradeImportantDependency(newDependency)
+        actualOperator = operator
     } else if (operatorStored == subOperator.address) {
-        tx = await OneRoleAccessControl.connect(subOperator).upgradeImportantDependency(newDependency)
+        actualOperator = subOperator
     } else {
         throw new Error(`Wrong operator: ${operatorStored}`)
     }
+    tx = await OneRoleAccessControl.connect(actualOperator).upgradeImportantDependency(newDependency)
     console.log(`upgradeImportantDependency tx sent: ${tx.hash}`)
     await tx.wait()
 

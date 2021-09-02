@@ -38,14 +38,15 @@ async function main() {
     )
     const spender = promptAmountResult.spender
 
-    let tx
+    let tx, actualOperator
     if (operatorStored == operator.address) {
-        tx = await OneRoleAccessControl.connect(operator).setAllowance([tokenAddr], spender)
+        actualOperator = operator
     } else if (operatorStored == subOperator.address) {
-        tx = await OneRoleAccessControl.connect(subOperator).setAllowance([tokenAddr], spender)
+        actualOperator = subOperator
     } else {
         throw new Error(`Wrong operator: ${operatorStored}`)
     }
+    tx = await OneRoleAccessControl.connect(actualOperator).setAllowance([tokenAddr], spender)
     console.log(`setAllowance tx sent: ${tx.hash}`)
     await tx.wait()
 }
