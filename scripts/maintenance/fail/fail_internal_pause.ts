@@ -8,12 +8,12 @@ async function main() {
 
     const tx = await CallProxy.connect(attacker).proxy(
         OneRoleAccessControl.address,
-        OneRoleAccessControl.interface.encodeFunctionData("setSomeParam", [666]),
+        OneRoleAccessControl.interface.encodeFunctionData("pause", []),
         {
             gasLimit: 100000,
         }
     )
-    console.log(`fail internal setSomeParam tx sent: ${tx.hash}`)
+    console.log(`fail internal pause tx sent: ${tx.hash}`)
     await tx.wait()
 }
 
