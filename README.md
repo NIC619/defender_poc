@@ -59,6 +59,7 @@
 
 5. Last, create notifications and set notification thresholds
     - for example, using [Slack webhook](https://api.slack.com/messaging/webhooks)
+    - you can use the default threshold valus which will send notification on every matched event/function call
 
 ![](./imgs/notifications.png)
 
@@ -98,7 +99,7 @@
 - `UpgradeProxyImplementation`
     - `0x77a6302d81154603Ac32d031275E9C9103B50D29`
 - `OneRoleAccessControl`
-    - `0x592360B99910Fa8Fc73b49dB32155BCeEB8E4F12`
+    - `0xBcd29fBcF28749D3015Da2c87230dD2eb6FA19C3`
 - `OneRoleAccessControlWithTimeLock`
     - `0x9D1F313beb8342673E4f90a4c7Dd04C292984208`
 
