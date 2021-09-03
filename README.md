@@ -5,7 +5,7 @@
 #### Detection
 - Can it detect event emission? What's the success rate? How fast is it?
 - Can it detect function call? What's the success rate? How fast is it?
-- Can it detect message call, i.e., function called by another contract? What's the success rate? How fast is it?
+- Can it detect message call (internal function call), i.e., function called by another contract? What's the success rate? How fast is it?
     - Can it detect failed message call or function call?
 
 #### Response
@@ -13,6 +13,18 @@
 
 ## Contracts to test against
 
+- `UpgradeProxy` and `UpgradeProxyImplementation`
+    - This pair of contracts are used to test upgrade proxy functionality
+        - can upgrade function call/event be detected?
+        - can implementation specific function call/event be detected?
+- `OneRoleAccessControl`
+    - This contract is used to test contract maintenance or allowance setting function calls
+- `OneRoleAccessControlWithTimeLock`
+    - This contract is used to test function calls like contract maintenance along with actions with time lock
+
+**NOTE**:
+- EIP1967 upgrade proxy pattern is used
+- `CallProxy` contract is used to invoke message call (internal function call).
 ## Scripts
 
 ### Deploy contracts
@@ -34,14 +46,27 @@ TODO
 - Transfer ownership, for example
     - `OneRoleAccessControl.transferOwner`
         - `npx hardhat run scripts/transferRoles/transferOwner_OneRoleAccessControl.ts --network kovan`
+        - invoke failed function call
+            - `npx hardhat run scripts/transferRoles/fail/fail_transferOwner_OneRoleAccessControl.ts  --network kovan`
     - `OneRoleAccessControlWithTimeLock.setNewOperator`
         - `npx hardhat run scripts/transferRoles/setNewOperator_OneRoleAccessControlWithTimeLock.ts --network kovan`
+        - invoke failed internal function call
+            - `npx hardhat run scripts/transferRoles/fail/fail_internal_setNewOperator_OneRoleAccessControlWithTimeLock.ts  --network kovan`
 - Contract maintenance, for example
     - `OneRoleAccessControlWithTimeLock.blacklist`
         - `npx hardhat run scripts/maintenance/blacklist.ts --network kovan`
+        - invoke failed function call
+            - `npx hardhat run scripts/maintenance/fail/fail_blacklist.ts --network kovan`
 - Approving spender, for example
     - `OneRoleAccessControlWithTimeLock.authorize`
         - `npx hardhat run scripts/allowance/authorize.ts --network kovan`
+        - invoke failed internal function call
+            - `npx hardhat run scripts/allowance/fail/fail_authorize.ts --network kovan`
+- Upgrade proxy implementation, for example
+    - `TransparentUpgradeableProxy.upgradeTo`
+        - `npx hardhat run scripts/upgradeProxyImpl/upgradeTo_UpgradeProxyImplementation.ts --network kovan`
+        - invoke failed internal function call
+            - `npx hardhat run scripts/upgradeProxyImpl/fail/fail_internal_upgrade_UpgradeProxyImplementation.ts --network kovan`
 
 ## Deployed contract addresses
 
