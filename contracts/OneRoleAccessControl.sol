@@ -10,6 +10,8 @@ contract OneRoleAccessControl {
 
     // Operator events
     event TransferOwnership(address newOperator);
+    event Paused();
+    event Unpaused();
     event UpgradeImportantDependency(address newImportantDependency);
     event SetSomeParam(uint256 newParam);
     event AllowTransfer(address tokenAddr, address spender);
@@ -48,6 +50,15 @@ contract OneRoleAccessControl {
     /************************************************************
      *           Management functions for Operator               *
      *************************************************************/
+
+    function pause() external onlyOperator {
+        emit Paused();
+    }
+
+    function unpause() external onlyOperator {
+        emit Unpaused();
+    }
+
     /**
      * @dev set new ImportantDependency
      */
