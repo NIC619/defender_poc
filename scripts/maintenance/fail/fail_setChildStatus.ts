@@ -1,5 +1,5 @@
 import {  ethers } from "hardhat"
-import { getAttacker, upgradeProxyAddr } from "../utils"
+import { getAttacker, upgradeProxyAddr } from "../../utils"
 
 async function main() {
     const attacker = getAttacker()

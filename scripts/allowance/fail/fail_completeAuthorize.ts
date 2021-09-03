@@ -1,5 +1,5 @@
 import {  ethers } from "hardhat"
-import { getAttacker, getContractAndOperator } from "../utils"
+import { getAttacker, getContractAndOperator } from "../../utils"
 
 async function main() {
     const attacker = getAttacker()
