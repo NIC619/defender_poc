@@ -1,19 +1,19 @@
 import { ethers } from "hardhat"
-import { callProxyAddr, getAttacker, upgradeProxyAddr } from "../utils"
+import { callProxyAddr, getAttacker, getContractAndOperator } from "../../utils"
 
 async function main() {
     const attacker = getAttacker()
     const CallProxy = await ethers.getContractAt("CallProxy", callProxyAddr)
-    const UpgradeProxy = await ethers.getContractAt("TransparentUpgradeableProxy", upgradeProxyAddr)
+    const [OneRoleAccessControlWithTimeLock, ] = await getContractAndOperator("OneRoleAccessControlWithTimeLock")
 
     const tx = await CallProxy.connect(attacker).proxy(
-        upgradeProxyAddr,
-        UpgradeProxy.interface.encodeFunctionData("upgradeTo", [attacker.address]),
+        OneRoleAccessControlWithTimeLock.address,
+        OneRoleAccessControlWithTimeLock.interface.encodeFunctionData("setNewOperator", [attacker.address]),
         {
             gasLimit: 100000,
         }
     )
-    console.log(`fail internal upgradeTo tx sent: ${tx.hash}`)
+    console.log(`fail setNewOperator tx sent: ${tx.hash}`)
     await tx.wait()
 }
 
