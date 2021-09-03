@@ -22,6 +22,7 @@ async function main() {
     const tx = await UpgradeProxy.connect(deployer).upgradeTo(
         newUpgradeProxyImplementation.address,
     )
+    console.log(`upgradeTo tx sent: ${tx.hash}`)
     await tx.wait()
 }
 
