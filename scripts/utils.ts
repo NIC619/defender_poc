@@ -91,6 +91,10 @@ export const defaultParam = ethers.BigNumber.from(199)
 
 export const defaultImportantDependency = "0xdeaddeaddeaddeaddeaddeaddeaddeaddeaddead"
 
+export const defaultValidAllowanceTokenAddr = "0x0000000000000000000000000000000000000aaa"
+
+export const defaultInvalidAllowanceTokenAddr = "0x0000000000000000000000000000000000000fff"
+
 export const callProxyAddr = "0x1E8b65D0562f89A1Bd951ADD5354d9a374dfe550"
 
 export const upgradeProxyAddr = "0x5827B6815Fdb97774Ea31E790c8503e7B9014917"
