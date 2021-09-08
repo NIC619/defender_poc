@@ -1,9 +1,9 @@
 import {  ethers } from "hardhat"
 import { default as prompts } from "prompts"
-import { getContractAndOperator } from "../utils"
+import { getContractAndOperators } from "../utils"
 
 async function main() {
-    const [OneRoleAccessControl, contractOperator] = await getContractAndOperator("OneRoleAccessControl")
+    const [OneRoleAccessControl, moreSecuredOperator, , ] = await getContractAndOperators("OneRoleAccessControl")
 
     const promptDependencyResult = await prompts(
         {
@@ -21,13 +21,13 @@ async function main() {
     const newDependency = promptDependencyResult.importantDepedencyAddr
 
     let tx
-    tx = await OneRoleAccessControl.connect(contractOperator).upgradeImportantDependency(newDependency)
+    tx = await OneRoleAccessControl.connect(moreSecuredOperator).upgradeImportantDependency(newDependency)
     console.log(`upgradeImportantDependency tx sent: ${tx.hash}`)
     await tx.wait()
 
     const importantDepedencyAddrStored = await OneRoleAccessControl.callStatic.importantDepedency()
     if (importantDepedencyAddrStored != newDependency) {
-        throw new Error(`Wrong someParam: ${importantDepedencyAddrStored}`)
+        throw new Error(`Wrong importantDepedency: ${importantDepedencyAddrStored}`)
     }
 }
 
