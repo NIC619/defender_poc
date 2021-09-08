@@ -3,90 +3,132 @@ pragma solidity 0.7.6;
 
 contract OneRoleAccessControl {
     // Below are the variables which consume storage slots.
-    address public operator;
-    uint256 public someParam;
+    address public moreSecuredOperator;
+    address public lessSecuredOperator;
+    address public errandOperator;
+    address public sentinel;
+    uint256 public importantParam;
+    uint256 public errandParam;
     address public importantDepedency;
-    address public spender;
 
     // Operator events
-    event TransferOwnership(address newOperator);
+    event TransferMoreSecuredOperator(address newMoreSecuredOperator);
+    event TransferLessSecuredOperator(address newLessSecuredOperator);
+    event TransferErrandOperator(address newErrandOperator);
+    event SetNewSentinel(address _newSentinel);
     event Paused();
     event Unpaused();
     event UpgradeImportantDependency(address newImportantDependency);
-    event SetSomeParam(uint256 newParam);
-    event AllowTransfer(address tokenAddr, address spender);
-    event DisallowTransfer(address tokenAddr, address spender);
+    event SetImportantParam(uint256 newImportantParam);
+    event SetErrandParam(uint256 newErrandParam);
+    event AllowTransferToFixedRecipeint(address tokenAddr);
+    event DisallowTransferToFixedRecipeint(address tokenAddr);
 
     receive() external payable {}
 
     /************************************************************
      *          Access control and ownership management          *
      *************************************************************/
-    modifier onlyOperator() {
-        require(operator == msg.sender, "OneRoleAccessControl: not the operator");
+    modifier onlyMoreSecuredOperator() {
+        require(moreSecuredOperator == msg.sender, "OneRoleAccessControl: not the moreSecuredOperator");
         _;
     }
 
-    function transferOwnership(address _newOperator) external onlyOperator {
-        require(_newOperator != address(0), "OneRoleAccessControl: operator can not be zero address");
-        operator = _newOperator;
+    modifier onlyLessSecuredOperator() {
+        require(lessSecuredOperator == msg.sender, "OneRoleAccessControl: not the lessSecuredOperator");
+        _;
+    }
 
-        emit TransferOwnership(_newOperator);
+    modifier onlyErrandOperator() {
+        require(errandOperator == msg.sender, "OneRoleAccessControl: not the errandOperator");
+        _;
+    }
+
+    modifier onlySentinel() {
+        require(sentinel == msg.sender, "OneRoleAccessControl: not the sentinel");
+        _;
+    }
+
+    function transferMoreSecuredOperator(address _newMoreSecuredOperator) external onlyMoreSecuredOperator {
+        require(_newMoreSecuredOperator != address(0), "OneRoleAccessControl: moreSecuredOperator can not be zero address");
+
+        emit TransferMoreSecuredOperator(_newMoreSecuredOperator);
+    }
+
+    function transferLessSecuredOperator(address _newLessSecuredOperator) external onlyMoreSecuredOperator {
+        require(_newLessSecuredOperator != address(0), "OneRoleAccessControl: lessSecuredOperator can not be zero address");
+
+        emit TransferLessSecuredOperator(_newLessSecuredOperator);
+    }
+
+    function transferErrandOperator(address _newErrandOperator) external onlyLessSecuredOperator {
+        require(_newErrandOperator != address(0), "OneRoleAccessControl: errandOperator can not be zero address");
+
+        emit TransferErrandOperator(_newErrandOperator);
+    }
+
+    function setNewSentinel(address _newSentinel) external onlyMoreSecuredOperator {
+        require(_newSentinel != address(0), "OneRoleAccessControl: sentinel can not be zero address");
+
+        emit SetNewSentinel(_newSentinel);
     }
 
     /************************************************************
      *              Constructor and init functions               *
      *************************************************************/
     constructor(
-        address _operator,
-        uint256 _someParam,
-        address _importantDepedency
+        address _moreSecuredOperator,
+        address _lessSecuredOperator,
+        address _errandOperator,
+        address _sentinel
     ) {
-        operator = _operator;
-        someParam = _someParam;
-        importantDepedency = _importantDepedency;
+        moreSecuredOperator = _moreSecuredOperator;
+        lessSecuredOperator = _lessSecuredOperator;
+        errandOperator = _errandOperator;
+        sentinel = _sentinel;
     }
 
     /************************************************************
-     *           Management functions for Operator               *
+     *           Management functions for Operators              *
      *************************************************************/
 
-    function pause() external onlyOperator {
+    function pause() external onlySentinel {
         emit Paused();
     }
 
-    function unpause() external onlyOperator {
+    function unpause() external onlyMoreSecuredOperator {
         emit Unpaused();
     }
 
-    /**
-     * @dev set new ImportantDependency
-     */
-    function upgradeImportantDependency(address _newImportantDependency) external onlyOperator {
+    function upgradeImportantDependency(address _newImportantDependency) external onlyMoreSecuredOperator {
         require(_newImportantDependency != address(0), "OneRoleAccessControl: importantDepedency can not be zero address");
         importantDepedency = _newImportantDependency;
 
         emit UpgradeImportantDependency(_newImportantDependency);
     }
 
-    function setSomeParam(uint256 _someParam) external onlyOperator {
-        someParam = _someParam;
+    function setImportantParam(uint256 _importantParam) external onlyLessSecuredOperator {
+        require(_importantParam < 100, "OneRoleAccessControl: _importantParam reach upper bound");
+        importantParam = _importantParam;
 
-        emit SetSomeParam(_someParam);
+        emit SetImportantParam(_importantParam);
     }
 
-    /**
-     * @dev approve spender to transfer tokens from this contract. This is used to collect fee.
-     */
-    function setAllowance(address[] calldata _tokenList, address _spender) external onlyOperator {
+    function setErrandParam(uint256 _errandParam) external onlyErrandOperator {
+        errandParam = _errandParam;
+
+        emit SetErrandParam(_errandParam);
+    }
+
+    function setAllowance(address[] calldata _tokenList) external onlyLessSecuredOperator {
         for (uint256 i = 0; i < _tokenList.length; i++) {
-            emit AllowTransfer(_tokenList[i], _spender);
+            emit AllowTransferToFixedRecipeint(_tokenList[i]);
         }
     }
 
-    function closeAllowance(address[] calldata _tokenList, address _spender) external onlyOperator {
+    function closeAllowance(address[] calldata _tokenList) external onlyLessSecuredOperator {
         for (uint256 i = 0; i < _tokenList.length; i++) {
-            emit DisallowTransfer(_tokenList[i], _spender);
+            emit DisallowTransferToFixedRecipeint(_tokenList[i]);
         }
     }
 }
