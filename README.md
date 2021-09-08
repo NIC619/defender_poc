@@ -99,7 +99,7 @@
 - `UpgradeProxyImplementation`
     - `0x77a6302d81154603Ac32d031275E9C9103B50D29`
 - `OneRoleAccessControl`
-    - `0xBcd29fBcF28749D3015Da2c87230dD2eb6FA19C3`
+    - `0xa88efB15C2980f5eC7a189C2CcdEC3cf3d3BBb1c`
 - `OneRoleAccessControlWithTimeLock`
     - `0x9D1F313beb8342673E4f90a4c7Dd04C292984208`
 
