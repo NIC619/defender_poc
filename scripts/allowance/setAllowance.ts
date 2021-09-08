@@ -1,41 +1,11 @@
 import {  ethers } from "hardhat"
-import { default as prompts } from "prompts"
-import { getContractAndOperator } from "../utils"
+import { defaultValidAllowanceTokenAddr, getContractAndOperators } from "../utils"
 
 async function main() {
-    const [OneRoleAccessControl, contractOperator] = await getContractAndOperator("OneRoleAccessControl")
-
-    const promptTokenAddrResult = await prompts(
-        {
-            type: "text",
-            name: "tokenAddr",
-            message: "token address",
-        },
-        {
-            onCancel: async function () {
-                console.log("Exit process")
-                process.exit(0)
-            },
-        },
-    )
-    const tokenAddr = promptTokenAddrResult.tokenAddr
-    const promptAmountResult = await prompts(
-        {
-            type: "text",
-            name: "spender",
-            message: "spender",
-        },
-        {
-            onCancel: async function () {
-                console.log("Exit process")
-                process.exit(0)
-            },
-        },
-    )
-    const spender = promptAmountResult.spender
+    const [OneRoleAccessControl, , lessSecuredOperator, ] = await getContractAndOperators("OneRoleAccessControl")
 
     let tx
-    tx = await OneRoleAccessControl.connect(contractOperator).setAllowance([tokenAddr], spender)
+    tx = await OneRoleAccessControl.connect(lessSecuredOperator).setAllowance([defaultValidAllowanceTokenAddr])
     console.log(`setAllowance tx sent: ${tx.hash}`)
     await tx.wait()
 }
