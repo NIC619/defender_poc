@@ -1,31 +1,14 @@
 import {  ethers } from "hardhat"
-import { default as prompts } from "prompts"
-import { getContractAndOperator } from "../utils"
+import { defaultValidBlacklistTokenAddr, getContractAndOperators } from "../utils"
 
 async function main() {
-    const [OneRoleAccessControlWithTimeLock, contractOperator] = await getContractAndOperator("OneRoleAccessControlWithTimeLock")
+    const [OneRoleAccessControlWithTimeLock, , , errandOperator ] = await getContractAndOperators("OneRoleAccessControlWithTimeLock")
 
-    const promptTokenResult = await prompts(
-        {
-            type: "text",
-            name: "tokenAddr",
-            message: "token address",
-        },
-        {
-            onCancel: async function () {
-                console.log("Exit process")
-                process.exit(0)
-            },
-        },
-    )
-    const newToken = promptTokenResult.tokenAddr
-
-    let tx
-    tx = await OneRoleAccessControlWithTimeLock.connect(contractOperator).blacklist([newToken], [true])
+    const tx = await OneRoleAccessControlWithTimeLock.connect(errandOperator).blacklist([defaultValidBlacklistTokenAddr], [true])
     console.log(`blacklist tx sent: ${tx.hash}`)
     await tx.wait()
 
-    const isBlacklistedStored = await OneRoleAccessControlWithTimeLock.callStatic.isBlacklisted(newToken)
+    const isBlacklistedStored = await OneRoleAccessControlWithTimeLock.callStatic.isBlacklisted(defaultValidBlacklistTokenAddr)
     if (isBlacklistedStored == true) {
         throw new Error(`Wrong isBlacklisted: ${isBlacklistedStored}`)
     }

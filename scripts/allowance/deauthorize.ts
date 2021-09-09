@@ -1,9 +1,9 @@
 import {  ethers } from "hardhat"
 import { default as prompts } from "prompts"
-import { getContractAndOperator } from "../utils"
+import { getContractAndOperators } from "../utils"
 
 async function main() {
-    const [OneRoleAccessControlWithTimeLock, contractOperator] = await getContractAndOperator("OneRoleAccessControlWithTimeLock")
+    const [OneRoleAccessControlWithTimeLock, , lessSecuredOperator, ] = await getContractAndOperators("OneRoleAccessControlWithTimeLock")
 
     const promptSpenderResult = await prompts(
         {
@@ -20,8 +20,7 @@ async function main() {
     )
     const spender = promptSpenderResult.spenderAddr
 
-    let tx
-    tx = await OneRoleAccessControlWithTimeLock.connect(contractOperator).deauthorize([spender])
+    const tx = await OneRoleAccessControlWithTimeLock.connect(lessSecuredOperator).deauthorize([spender])
     console.log(`deauthorize tx sent: ${tx.hash}`)
     await tx.wait()
 

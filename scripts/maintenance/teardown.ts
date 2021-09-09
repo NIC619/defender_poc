@@ -1,11 +1,10 @@
 import {  ethers } from "hardhat"
-import { getContractAndOperator } from "../utils"
+import { getContractAndOperators } from "../utils"
 
 async function main() {
-    const [OneRoleAccessControlWithTimeLock, contractOperator] = await getContractAndOperator("OneRoleAccessControlWithTimeLock")
+    const [OneRoleAccessControlWithTimeLock, moreSecuredOperator, , ] = await getContractAndOperators("OneRoleAccessControlWithTimeLock")
 
-    let tx
-    tx = await OneRoleAccessControlWithTimeLock.connect(contractOperator).teardown()
+    const tx = await OneRoleAccessControlWithTimeLock.connect(moreSecuredOperator).teardown()
     console.log(`teardown tx sent: ${tx.hash}`)
     await tx.wait()
 }
