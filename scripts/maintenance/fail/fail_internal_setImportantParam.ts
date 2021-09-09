@@ -1,19 +1,19 @@
 import {  ethers } from "hardhat"
-import { callProxyAddr, getAttacker, getContractAndOperator } from "../../utils"
+import { callProxyAddr, getAttacker, getContractAndOperators } from "../../utils"
 
 async function main() {
     const attacker = getAttacker()
     const CallProxy = await ethers.getContractAt("CallProxy", callProxyAddr)
-    const [OneRoleAccessControl, ] = await getContractAndOperator("OneRoleAccessControl")
+    const [OneRoleAccessControl, , , ] = await getContractAndOperators("OneRoleAccessControl")
 
     const tx = await CallProxy.connect(attacker).proxy(
         OneRoleAccessControl.address,
-        OneRoleAccessControl.interface.encodeFunctionData("upgradeImportantDependency", [attacker.address]),
+        OneRoleAccessControl.interface.encodeFunctionData("setImportantParam", [60]),
         {
             gasLimit: 100000,
         }
     )
-    console.log(`fail internal upgradeImportantDependency tx sent: ${tx.hash}`)
+    console.log(`fail internal setImportantParam tx sent: ${tx.hash}`)
     await tx.wait()
 }
 

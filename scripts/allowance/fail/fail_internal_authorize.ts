@@ -1,14 +1,14 @@
 import {  ethers } from "hardhat"
-import { callProxyAddr, getAttacker, getContractAndOperator } from "../../utils"
+import { callProxyAddr, getAttacker, getContractAndOperators } from "../../utils"
 
 async function main() {
     const attacker = getAttacker()
     const CallProxy = await ethers.getContractAt("CallProxy", callProxyAddr)
-    const [OneRoleAccessControlWithTimeLock, ] = await getContractAndOperator("OneRoleAccessControlWithTimeLock")
+    const [OneRoleAccessControlWithTimeLock, , , ] = await getContractAndOperators("OneRoleAccessControlWithTimeLock")
 
     const tx = await CallProxy.connect(attacker).proxy(
         OneRoleAccessControlWithTimeLock.address,
-        OneRoleAccessControlWithTimeLock.interface.encodeFunctionData("authorize", [attacker.address]),
+        OneRoleAccessControlWithTimeLock.interface.encodeFunctionData("authorize", [[attacker.address]]),
         {
             gasLimit: 100000,
         }

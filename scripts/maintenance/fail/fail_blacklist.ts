@@ -1,12 +1,11 @@
 import {  ethers } from "hardhat"
-import { getAttacker, getContractAndOperator } from "../../utils"
+import { getAttacker, getContractAndOperators } from "../../utils"
 
 async function main() {
     const attacker = getAttacker()
-    const [OneRoleAccessControlWithTimeLock, ] = await getContractAndOperator("OneRoleAccessControlWithTimeLock")
+    const [OneRoleAccessControlWithTimeLock, , , ] = await getContractAndOperators("OneRoleAccessControlWithTimeLock")
 
-    let tx
-    tx = await OneRoleAccessControlWithTimeLock.connect(attacker).blacklist(
+    const tx = await OneRoleAccessControlWithTimeLock.connect(attacker).blacklist(
         [attacker.address],
         [true],
         {

@@ -1,25 +1,24 @@
 import { ethers } from "hardhat"
-import { getDeployer, getOperator, upgradeProxyAddr } from "../utils"
+import { getDeployer, getMoreSecuredOperator, upgradeProxyAddr } from "../utils"
 
 async function main() {
-    const deployer = getDeployer()
-    const operator = getOperator()
+    const moreSecuredOperator = getMoreSecuredOperator()
 
-    const UpgradeProxy = await ethers.getContractAt("TransparentUpgradeableProxy", upgradeProxyAddr, deployer)
+    const UpgradeProxy = await ethers.getContractAt("TransparentUpgradeableProxy", upgradeProxyAddr, moreSecuredOperator)
 
     // Deploying new UpgradeProxyImplementation
     console.log("Deploying new UpgradeProxyImplementation...")
     const newUpgradeProxyImplementation = await (
-        await ethers.getContractFactory("UpgradeProxyImplementation", deployer)
+        await ethers.getContractFactory("UpgradeProxyImplementation", moreSecuredOperator)
     ).deploy()
     await newUpgradeProxyImplementation.deployTransaction.wait()
     console.log(`New UpgradeProxyImplementation contract address: ${newUpgradeProxyImplementation.address}`)
 
-    // const tx = await UpgradeProxy.connect(deployer).upgradeToAndCall(
+    // const tx = await UpgradeProxy.connect(moreSecuredOperator).upgradeToAndCall(
     //     newUpgradeProxyImplementation.address,
-    //     newUpgradeProxyImplementation.interface.encodeFunctionData("initialize", [operator.address])
+    //     newUpgradeProxyImplementation.interface.encodeFunctionData("initialize", [moreSecuredOperator.address])
     // )
-    const tx = await UpgradeProxy.connect(deployer).upgradeTo(
+    const tx = await UpgradeProxy.connect(moreSecuredOperator).upgradeTo(
         newUpgradeProxyImplementation.address,
     )
     console.log(`upgradeTo tx sent: ${tx.hash}`)

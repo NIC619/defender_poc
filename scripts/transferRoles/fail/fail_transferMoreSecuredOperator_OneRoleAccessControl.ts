@@ -1,16 +1,18 @@
-import {  ethers } from "hardhat"
+import { ethers } from "hardhat"
 import { getAttacker, getContractAndOperators } from "../../utils"
 
 async function main() {
     const attacker = getAttacker()
+
     const [OneRoleAccessControl, , , ] = await getContractAndOperators("OneRoleAccessControl")
 
-    const tx = await OneRoleAccessControl.connect(attacker).pause(
+    const tx = await OneRoleAccessControl.connect(attacker).transferMoreSecuredOperator(
+        attacker.address,
         {
             gasLimit: 100000,
         }
     )
-    console.log(`fail pause tx sent: ${tx.hash}`)
+    console.log(`fail transferMoreSecuredOperator tx sent: ${tx.hash}`)
     await tx.wait()
 }
 

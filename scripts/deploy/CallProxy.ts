@@ -1,9 +1,8 @@
 import { ethers } from "hardhat"
-import { getDeployer, getOperator } from "../utils"
+import { getDeployer } from "../utils"
 
 async function main() {
     const deployer = getDeployer()
-    const operator = getOperator()
 
     // Deploying CallProxy
     console.log("Deploying CallProxy...")

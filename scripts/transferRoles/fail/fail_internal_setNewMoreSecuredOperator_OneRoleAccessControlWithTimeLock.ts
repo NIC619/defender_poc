@@ -1,19 +1,19 @@
-import {  ethers } from "hardhat"
-import { callProxyAddr, getAttacker, getContractAndOperator } from "../../utils"
+import { ethers } from "hardhat"
+import { callProxyAddr, getAttacker, getContractAndOperators } from "../../utils"
 
 async function main() {
     const attacker = getAttacker()
     const CallProxy = await ethers.getContractAt("CallProxy", callProxyAddr)
-    const [OneRoleAccessControlWithTimeLock, ] = await getContractAndOperator("OneRoleAccessControlWithTimeLock")
+    const [OneRoleAccessControlWithTimeLock, , , ] = await getContractAndOperators("OneRoleAccessControlWithTimeLock")
 
     const tx = await CallProxy.connect(attacker).proxy(
         OneRoleAccessControlWithTimeLock.address,
-        OneRoleAccessControlWithTimeLock.interface.encodeFunctionData("completeAuthorize", []),
+        OneRoleAccessControlWithTimeLock.interface.encodeFunctionData("setNewMoreSecuredOperator", [attacker.address]),
         {
             gasLimit: 100000,
         }
     )
-    console.log(`fail internal completeAuthorize tx sent: ${tx.hash}`)
+    console.log(`fail setNewMoreSecuredOperator tx sent: ${tx.hash}`)
     await tx.wait()
 }
 

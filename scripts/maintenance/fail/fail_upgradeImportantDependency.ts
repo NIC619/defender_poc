@@ -1,12 +1,11 @@
 import {  ethers } from "hardhat"
-import { getAttacker, getContractAndOperator } from "../../utils"
+import { getAttacker, getContractAndOperators } from "../../utils"
 
 async function main() {
     const attacker = getAttacker()
-    const [OneRoleAccessControl, ] = await getContractAndOperator("OneRoleAccessControl")
+    const [OneRoleAccessControl, , , ] = await getContractAndOperators("OneRoleAccessControl")
 
-    let tx
-    tx = await OneRoleAccessControl.connect(attacker).upgradeImportantDependency(
+    const tx = await OneRoleAccessControl.connect(attacker).upgradeImportantDependency(
         attacker.address,
         {
             gasLimit: 100000,

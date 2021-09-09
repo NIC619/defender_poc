@@ -9,12 +9,12 @@ async function main() {
 
     const tx = await CallProxy.connect(attacker).proxy(
         upgradeProxyAddr,
-        UpgradeProxy.interface.encodeFunctionData("transferOwnership", [attacker.address]),
+        UpgradeProxy.interface.encodeFunctionData("transferMoreSecuredOperator", [attacker.address]),
         {
             gasLimit: 100000,
         }
     )
-    console.log(`fail internal transferOwnership tx sent: ${tx.hash}`)
+    console.log(`fail internal transferMoreSecuredOperator tx sent: ${tx.hash}`)
     await tx.wait()
 }
 
