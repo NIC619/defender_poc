@@ -4,7 +4,7 @@ import { callProxyAddr, getAttacker, getContractAndOperators } from "../../utils
 async function main() {
     const attacker = getAttacker()
     const CallProxy = await ethers.getContractAt("CallProxy", callProxyAddr)
-    const [OneRoleAccessControl, ] = await getContractAndOperators("OneRoleAccessControl")
+    const [OneRoleAccessControl, , , ] = await getContractAndOperators("OneRoleAccessControl")
 
     const tx = await CallProxy.connect(attacker).proxy(
         OneRoleAccessControl.address,
