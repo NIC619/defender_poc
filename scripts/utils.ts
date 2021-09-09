@@ -97,6 +97,10 @@ export const defaultValidAllowanceTokenAddr = "0x0000000000000000000000000000000
 
 export const defaultInvalidAllowanceTokenAddr = "0x0000000000000000000000000000000000000fff"
 
+export const defaultValidBlacklistTokenAddr = "0x0000000000000000000000000000000000000aaa"
+
+export const defaultValidSpenderAddr = "0x0000000000000000000000000000000000000aaa"
+
 export const callProxyAddr = "0x1E8b65D0562f89A1Bd951ADD5354d9a374dfe550"
 
 export const upgradeProxyAddr = "0xd4c037782a1D181701e697ad80aB56A40c6be9Bb"
@@ -105,4 +109,4 @@ export const upgradeProxyImplementationAddr = "0x1E0D76E9556a8089cdb382243610437
 
 export const oneRoleAccessControlAddr = "0xa88efB15C2980f5eC7a189C2CcdEC3cf3d3BBb1c"
 
-export const oneRoleAccessControlWithTimeLockAddr = "0x9D1F313beb8342673E4f90a4c7Dd04C292984208"
+export const oneRoleAccessControlWithTimeLockAddr = "0x0d975AEB0ee9EFd0682A303987aF2018e2917189"

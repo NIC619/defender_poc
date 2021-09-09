@@ -1,23 +1,27 @@
 import { ethers } from "hardhat"
-import { getDeployer, getOperator } from "../utils"
+import { getDeployer, getErrandOperator, getLessSecuredOperator, getMoreSecuredOperator } from "../utils"
 
 async function main() {
     const deployer = getDeployer()
-    const operator = getOperator()
+    const moreSecuredOperator = getMoreSecuredOperator()
+    const lessSecuredOperator = getLessSecuredOperator()
+    const errandOperator = getErrandOperator()
 
     // Deploying OneRoleAccessControlWithTimeLock
     console.log("Deploying OneRoleAccessControlWithTimeLock...")
     const OneRoleAccessControlWithTimeLock = await (
         await ethers.getContractFactory("OneRoleAccessControlWithTimeLock", deployer)
     ).deploy(
-        operator.address
+        moreSecuredOperator.address,
+        lessSecuredOperator.address,
+        errandOperator.address,
     )
     await OneRoleAccessControlWithTimeLock.deployTransaction.wait()
     console.log(`OneRoleAccessControlWithTimeLock contract address: ${OneRoleAccessControlWithTimeLock.address}`)
 
-    const operatorStored = await OneRoleAccessControlWithTimeLock.connect(deployer).callStatic.operator()
-    if (operatorStored !== operator.address) {
-        throw new Error(`Wrong operator: ${operatorStored}`)
+    const moreSecuredOperatorStored = await OneRoleAccessControlWithTimeLock.connect(deployer).callStatic.moreSecuredOperator()
+    if (moreSecuredOperatorStored !== moreSecuredOperator.address) {
+        throw new Error(`Wrong moreSecuredOperator: ${moreSecuredOperatorStored}`)
     }
     const timelockActivated = await OneRoleAccessControlWithTimeLock.connect(deployer).callStatic.timelockActivated()
     if (timelockActivated !== false) {

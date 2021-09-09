@@ -101,6 +101,6 @@
 - `OneRoleAccessControl`
     - `0xa88efB15C2980f5eC7a189C2CcdEC3cf3d3BBb1c`
 - `OneRoleAccessControlWithTimeLock`
-    - `0x9D1F313beb8342673E4f90a4c7Dd04C292984208`
+    - `0x0d975AEB0ee9EFd0682A303987aF2018e2917189`
 
 NOTE: if you deploy new contract instances, remeber to update the contract address in `./scripts/utils.ts`
