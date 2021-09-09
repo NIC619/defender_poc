@@ -1,6 +1,7 @@
 import {  ethers } from "hardhat"
 import { default as prompts } from "prompts"
 import { getContractAndOperators } from "../utils"
+import { importantParamLowerBound, importantParamUpperBound } from "../autotask/pause/OneRoleAccessControl"
 
 async function main() {
     const [OneRoleAccessControl, , lessSecuredOperator, ] = await getContractAndOperators("OneRoleAccessControl")
@@ -9,7 +10,7 @@ async function main() {
         {
             type: "number",
             name: "importantParam",
-            message: "important param",
+            message: `important param, number between ${importantParamLowerBound} and ${importantParamUpperBound}, otherwise it would trigger Sentinel `,
         },
         {
             onCancel: async function () {

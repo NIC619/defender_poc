@@ -1,5 +1,8 @@
 import { ethers } from "ethers"
 
+export const importantParamLowerBound = 30
+export const importantParamUpperBound = 80
+
 export async function handler(event) {
     const contractAddr = event.request.body.sentinel.address
     const { alchemyApiToken, sentinelPrivKey } = event.secrets
@@ -22,7 +25,7 @@ export async function handler(event) {
 
             if ((r.type == "function") && (r.signature.startsWith("setImportantParam"))) {
                 // Pause the contract if importandParam was set to an unexpected value
-                if ((r.params._importantParam < 30) || (r.params._importantParam > 80)) {
+                if ((r.params._importantParam < importantParamLowerBound) || (r.params._importantParam > importantParamUpperBound)) {
                     await sentinel.sendTransaction({
                         to: contractAddr,
                         data: pauseFuncSig
