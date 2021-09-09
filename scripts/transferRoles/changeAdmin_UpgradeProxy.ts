@@ -1,13 +1,13 @@
 import { ethers } from "hardhat"
-import { getDeployer, upgradeProxyAddr } from "../utils"
+import { getMoreSecuredOperator, upgradeProxyAddr } from "../utils"
 
 async function main() {
-    const deployer = getDeployer()
+    const moreSecuredOperator = getMoreSecuredOperator()
 
     const UpgradeProxy = await ethers.getContractAt("TransparentUpgradeableProxy", upgradeProxyAddr)
 
     let tx
-    tx = await UpgradeProxy.connect(deployer).changeAdmin(deployer.address)
+    tx = await UpgradeProxy.connect(moreSecuredOperator).changeAdmin(moreSecuredOperator.address)
     console.log(`changeAdmin tx sent: ${tx.hash}`)
     await tx.wait()
 }
