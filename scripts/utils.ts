@@ -50,8 +50,10 @@ export const getContractAndOperators = async (contractName: string) => {
     const lessSecuredOperator = getLessSecuredOperator()
     const errandOperator = getErrandOperator()
 
+    let isUpgradeProxy = false
     let contractAddr, contract
     if (contractName == "UpgradeProxyImplementation") {
+        isUpgradeProxy = true
         contractAddr = upgradeProxyAddr
     } else if (contractName == "OneRoleAccessControl") {
         contractAddr = oneRoleAccessControlAddr
@@ -61,11 +63,11 @@ export const getContractAndOperators = async (contractName: string) => {
         throw Error(`Invalid contract name: ${contractName}`)
     }
     contract = await ethers.getContractAt(contractName, contractAddr)
-    const moreSecuredOperatorStored = await contract.callStatic.moreSecuredOperator()
+    const moreSecuredOperatorStored = isUpgradeProxy ? "" : await contract.callStatic.moreSecuredOperator()
     const lessSecuredOperatorStored = await contract.callStatic.lessSecuredOperator()
     const errandOperatorStored = await contract.callStatic.errandOperator()
 
-    if (moreSecuredOperatorStored != moreSecuredOperator.address) {
+    if (!isUpgradeProxy && moreSecuredOperatorStored != moreSecuredOperator.address) {
         throw new Error(`Wrong moreSecuredOperator: ${moreSecuredOperatorStored}`)
     }
     if (lessSecuredOperatorStored != lessSecuredOperator.address) {
@@ -97,9 +99,9 @@ export const defaultInvalidAllowanceTokenAddr = "0x00000000000000000000000000000
 
 export const callProxyAddr = "0x1E8b65D0562f89A1Bd951ADD5354d9a374dfe550"
 
-export const upgradeProxyAddr = "0x5827B6815Fdb97774Ea31E790c8503e7B9014917"
+export const upgradeProxyAddr = "0xd4c037782a1D181701e697ad80aB56A40c6be9Bb"
 
-export const upgradeProxyImplementationAddr = "0x77a6302d81154603Ac32d031275E9C9103B50D29"
+export const upgradeProxyImplementationAddr = "0x1E0D76E9556a8089cdb3822436104378E3572103"
 
 export const oneRoleAccessControlAddr = "0xa88efB15C2980f5eC7a189C2CcdEC3cf3d3BBb1c"
 

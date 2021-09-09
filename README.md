@@ -95,9 +95,9 @@
 - `CallProxy`
     - `0x1E8b65D0562f89A1Bd951ADD5354d9a374dfe550`
 - `UpgradeProxy`
-    - `0x5827B6815Fdb97774Ea31E790c8503e7B9014917`
+    - `0xd4c037782a1D181701e697ad80aB56A40c6be9Bb`
 - `UpgradeProxyImplementation`
-    - `0x77a6302d81154603Ac32d031275E9C9103B50D29`
+    - `0x1E0D76E9556a8089cdb3822436104378E3572103`
 - `OneRoleAccessControl`
     - `0xa88efB15C2980f5eC7a189C2CcdEC3cf3d3BBb1c`
 - `OneRoleAccessControlWithTimeLock`

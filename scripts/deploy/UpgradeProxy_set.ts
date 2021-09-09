@@ -1,9 +1,12 @@
 import { ethers } from "hardhat"
-import { getDeployer, getOperator } from "./utils"
+import { getDeployer, getErrandOperator, getLessSecuredOperator, getMoreSecuredOperator, getSentinel } from "../utils"
 
 async function main() {
     const deployer = getDeployer()
-    const operator = getOperator()
+    const moreSecuredOperator = getMoreSecuredOperator()
+    const lessSecuredOperator = getLessSecuredOperator()
+    const errandOperator = getErrandOperator()
+    const sentinel = getSentinel()
 
     // Deploying UpgradeProxyImplementation
     console.log("Deploying UpgradeProxyImplementation...")
@@ -19,8 +22,12 @@ async function main() {
         await ethers.getContractFactory("TransparentUpgradeableProxy", deployer)
     ).deploy(
         UpgradeProxyImplementation.address,
-        deployer.address,
-        UpgradeProxyImplementation.interface.encodeFunctionData("initialize", [operator.address])
+        moreSecuredOperator.address,
+        UpgradeProxyImplementation.interface.encodeFunctionData("initialize", [
+            lessSecuredOperator.address,
+            errandOperator.address,
+            sentinel.address
+        ])
     )
     await UpgradeProxy.deployTransaction.wait()
     console.log(`UpgradeProxy contract address: ${UpgradeProxy.address}`)
@@ -34,9 +41,9 @@ async function main() {
         throw new Error(`Wrong admin: ${admin}`)
     }
     UpgradeProxy = UpgradeProxyImplementation.attach(UpgradeProxy.address)
-    const operatorStored = await UpgradeProxy.callStatic.operator()
-    if (operatorStored !== operator.address) {
-        throw new Error(`Wrong operator: ${operatorStored}`)
+    const moreSecuredOperatorStored = await UpgradeProxy.connect(lessSecuredOperator).callStatic.moreSecuredOperator()
+    if (moreSecuredOperatorStored !== moreSecuredOperator.address) {
+        throw new Error(`Wrong moreSecuredOperator: ${moreSecuredOperatorStored}`)
     }
 }
 
