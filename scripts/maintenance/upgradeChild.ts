@@ -1,51 +1,20 @@
 import { ethers } from "hardhat"
-import { default as prompts } from "prompts"
-import { getContractAndOperator } from "../utils"
+import { getContractAndOperators } from "../utils"
+import { expectedChild, expectedChildStatus } from "../autotask/pause/UpgradeProxyImplementation"
 
 async function main() {
-    const [UpgradeProxy, contractOperator] = await getContractAndOperator("UpgradeProxyImplementation")
+    const [UpgradeProxy, , lessSecuredOperator, ] = await getContractAndOperators("UpgradeProxyImplementation")
 
-    const promptChildAddrResult = await prompts(
-        {
-            type: "text",
-            name: "childAddr",
-            message: "child address",
-        },
-        {
-            onCancel: async function () {
-                console.log("Exit process")
-                process.exit(0)
-            },
-        },
-    )
-    const newChildAddr = promptChildAddrResult.childAddr
-
-    const promptStatusResult = await prompts(
-        {
-            type: "confirm",
-            name: "childStatus",
-            message: "child status (activated or not)",
-        },
-        {
-            onCancel: async function () {
-                console.log("Exit process")
-                process.exit(0)
-            },
-        },
-    )
-    const newChilStatus = promptStatusResult.childStatus
-
-    let tx
-    tx = await UpgradeProxy.connect(contractOperator).upgradeChild(newChildAddr, newChilStatus)
+    const tx = await UpgradeProxy.connect(lessSecuredOperator).upgradeChild(expectedChild, expectedChildStatus)
     console.log(`upgradeChild tx sent: ${tx.hash}`)
     await tx.wait()
 
     const childAddrStored = await UpgradeProxy.callStatic.childAddr()
-    if (childAddrStored != newChildAddr) {
+    if (childAddrStored != expectedChild) {
         throw new Error(`Wrong childAddr: ${childAddrStored}`)
     }
     const childStatusStored = await UpgradeProxy.callStatic.isChildEnabled()
-    if (childStatusStored != newChilStatus) {
+    if (childStatusStored != expectedChildStatus) {
         throw new Error(`Wrong isChildEnabled: ${childStatusStored}`)
     }
 }
