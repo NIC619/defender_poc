@@ -1,15 +1,25 @@
 # Test Openzepplin Defender service
 
 ## Goals
-### To test and record the findings of the following:
+
+To test and record the findings of the following:
+
 #### Detection
+
+We use `Sentinel` service to detect anomilies in the system and sent alert to channels like `Slack` or `Telegram`
+
 - Can it detect event emission? What's the success rate? How fast is it?
 - Can it detect function call? What's the success rate? How fast is it?
 - Can it detect message call (internal function call), i.e., function called by another contract? What's the success rate? How fast is it?
     - Can it detect failed message call or function call?
 
 #### Response
-- Cant it respond as instructed? What's the success rate? How fast is it?
+
+We use `Autotask` service to respond to alert raised by `Sentinel` service
+
+- Cant it respond as instructed? for example, pausing the contract. What's the success rate? How fast is it?
+
+___
 
 ## Contracts to test against
 
@@ -20,14 +30,58 @@
 - `OneRoleAccessControl`
     - This contract is used to test contract maintenance or allowance setting function calls
 - `OneRoleAccessControlWithTimeLock`
-    - This contract is used to test function calls like contract maintenance along with actions with time lock
+    - This contract is used to test function calls like contract maintenance along with actions guarded by time lock
 
 **NOTE**:
 - EIP1967 upgrade proxy pattern is used
 - `CallProxy` contract is used to invoke message call (internal function call).
+
+### Roles in the contracts
+
+The above three contracts all have a set of operator roles:
+- `OneRoleAccessControl` and `OneRoleAccessControlWithTimeLock`
+    - Four roles: `moreSecuredOperator`, `lessSecuredOperator`, `errandOperator` and `sentinel`
+- `UpgradeProxy` and `UpgradeProxyImplementation`
+    - Three roles: `lessSecuredOperator` , `errandOperator` and `sentinel`
+
+Duties of each role:
+- `moreSecuredOperator` manages important tasks such as `upgradeImportantDependency` or `teardown`, and also assigning `lessSecuredOperator` and `sentinel`
+    - Note that tasks categorized as **important** tasks are tasks that in its worst case jeoperdize users' fund
+    - so `moreSecuredOperator` should be the most secured wallet in the system, e.g., a 5-of-5 multisigs
+- `lessSecuredOperator` manages less important tasks such as `setAllowance` or `setImportantParam`, and also assigning `errandOperator`
+    - Note that tasks categorized as **less important** tasks are tasks that in its worst case halt the system but not jeoperdizing users' fund
+        - `setAllowance` or `setImportantParam` function is modified to lower the damage if `lessSecuredOperator` is compromised
+            - for example, `setAllowance` can only allow pre-specified actor instead of arbitrary one to spend from the contract
+            - for example, `setImportantParam` has a bound on the param so it can't be set to arbitrary value that might endanger users' fund
+    - `lessSecuredOperator` should be the second most secured wallet in the system, e.g., a 3-of-5 multisigs
+- `errandOperator` manages housekeeping tasks such as `setErrandParam` or `blacklist`
+    - Note that tasks categorized as **housekeeping** tasks are tasks that in its worst case halt part of the system but not jeoperdizing users' fund
+    - `errandOperator` can be a less secured wallet in the system, e.g., a 2-of-3 multisigs or a hot/cold wallet
+- `sentinel`'s only job is to freeze the system by for example, `pause` the contract or stop the staking/borrowing/liquidating functions
+
+**NOTE**:
+- Since we use EIP1967 upgrade proxy pattern, `moreSecuredOperator` will be the admin of the proxy which manages the upgrade of implementation
+    - and hence `moreSecuredOperator` can not also be an operator in the implementation because admin's call to proxy contract will be intercepted
+    - UUPS pattern will not have this problem
+
+## Detect and response conditions
+
+- If `setAllowance` sets allowance for unexpected address(es), `pause` the contract immediately
+    - we would have to maintain the expected address(es) in the `Autotask` scritps
+        - remeber to update the expected address(es) before doing actual upgrade otherwise it would accidentally `pause` the contract once you upgrade
+- If `setImportantParam` is set to unexpected values, `pause` the contract immediately
+    - the same as above, we have to maintain the expected values
+- If `upgradeChild` upgrade child contract to an unexpected address, `pause` the contract immediately
+    - the same as above, we have to maintain the expected address
+
+**NOTE**:
+- The above conditions are transactions that succeed and changed the state of the contract, we do not respond to failed transactions
+    - So remember to watch for succeeded transactions in `Sentinel` service or filter out failed transactions in `Autotask` scripts
+
+___
 ## Scripts
 
-### Deploy contracts
+### 1. Deploy contracts
 
 - Deploy `CallProxy` contract
     - `npx hardhat run scripts/deploy/CallProxy.ts --network kovan`
@@ -38,32 +92,15 @@
 - Deploy `OneRoleAccessControlWithTimeLock` contract
     - `npx hardhat run scripts/deploy/OneRoleAccessControlWithTimeLock.ts --network kovan`
 
-### Set up Sentinel instances
-1. Go to https://defender.openzeppelin.com/#/sentinel and sign up
-2. Hit `Create Sentinel` button to create new Sentinel instnace
+**NOTE**: if you deploy new contract instances, remeber to update the contract addresses in `READEME.md` and `./scripts/utils.ts`
 
-![](./imgs/create.png)
+### 2. Set up Sentinel and Autotask
 
-3. Input instance name, choose network, input contract address and ABI and choose confirmation blocks
-    - if the contract is verified, it would automatically fetch the ABI from etherscan
-    - otherwise you have to paste the contract ABI
-    - confirmation blocks determine how many blocks are confirmed before Sentinel sent the notification
+After contracts are deployed, go set up `Sentinel` and `Autotask` instances.
+- [set up Sentinel](./setupSentinel.md)
+- [set up Autotask](./setupAutotask.md)
 
-![](./imgs/info.png)
-
-4. Next, you can configure the filter and choose which events/functions to watch
-    - for more information on configuring filters, go to [doc](https://docs.openzeppelin.com/defender/sentinel#matching-rules)
-    - you can invoke functions and use the `Test Sentinel conditions` on the right to check if the invoked function calls are correctly captured
-
-![](./imgs/conditions.png)
-
-5. Last, create notifications and set notification thresholds
-    - for example, using [Slack webhook](https://api.slack.com/messaging/webhooks)
-    - you can use the default threshold valus which will send notification on every matched event/function call
-
-![](./imgs/notifications.png)
-
-### Run scripts to invoke targeted functions
+### 3. Run scripts to invoke targeted functions
 
 - Transfer ownership, for example
     - `OneRoleAccessControl.transferOwner`
@@ -90,6 +127,8 @@
         - invoke failed internal function call
             - `npx hardhat run scripts/upgradeProxyImpl/fail/fail_internal_upgrade_UpgradeProxyImplementation.ts --network kovan`
 
+___
+
 ## Deployed contract addresses
 
 - `CallProxy`
@@ -102,5 +141,3 @@
     - `0xa88efB15C2980f5eC7a189C2CcdEC3cf3d3BBb1c`
 - `OneRoleAccessControlWithTimeLock`
     - `0x0d975AEB0ee9EFd0682A303987aF2018e2917189`
-
-NOTE: if you deploy new contract instances, remeber to update the contract address in `./scripts/utils.ts`
