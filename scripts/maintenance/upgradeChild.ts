@@ -1,11 +1,11 @@
 import { ethers } from "hardhat"
 import { getContractAndOperators } from "../utils"
-import { expectedChild, expectedChildStatus } from "../autotask/pause/UpgradeProxyImplementation"
+import { expectedChild } from "../autotask/pause/UpgradeProxyImplementation"
 
 async function main() {
     const [UpgradeProxy, , lessSecuredOperator, ] = await getContractAndOperators("UpgradeProxyImplementation")
 
-    const tx = await UpgradeProxy.connect(lessSecuredOperator).upgradeChild(expectedChild, expectedChildStatus)
+    const tx = await UpgradeProxy.connect(lessSecuredOperator).upgradeChild(expectedChild, true)
     console.log(`upgradeChild tx sent: ${tx.hash}`)
     await tx.wait()
 
@@ -14,7 +14,7 @@ async function main() {
         throw new Error(`Wrong childAddr: ${childAddrStored}`)
     }
     const childStatusStored = await UpgradeProxy.callStatic.isChildEnabled()
-    if (childStatusStored != expectedChildStatus) {
+    if (childStatusStored != true) {
         throw new Error(`Wrong isChildEnabled: ${childStatusStored}`)
     }
 }

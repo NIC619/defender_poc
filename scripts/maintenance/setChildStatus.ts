@@ -1,7 +1,6 @@
 import {  ethers } from "hardhat"
 import { default as prompts } from "prompts"
 import { getContractAndOperators } from "../utils"
-import { expectedChildStatus } from "../autotask/pause/UpgradeProxyImplementation"
 
 async function main() {
     const [UpgradeProxy, , lessSecuredOperator, ] = await getContractAndOperators("UpgradeProxyImplementation")
@@ -10,7 +9,7 @@ async function main() {
         {
             type: "confirm",
             name: "childStatus",
-            message: `child status (activated or not), it would trigger Sentinel if set to ${!expectedChildStatus}`,
+            message: "child status (activated or not)",
         },
         {
             onCancel: async function () {

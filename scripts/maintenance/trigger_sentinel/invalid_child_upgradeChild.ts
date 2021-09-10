@@ -1,6 +1,6 @@
 import { ethers } from "hardhat"
 import { getContractAndOperators } from "../../utils"
-import { expectedChild, expectedChildStatus } from "../../autotask/pause/UpgradeProxyImplementation"
+import { expectedChild } from "../../autotask/pause/UpgradeProxyImplementation"
 
 async function main() {
     const [UpgradeProxy, , lessSecuredOperator, ] = await getContractAndOperators("UpgradeProxyImplementation")
@@ -10,7 +10,7 @@ async function main() {
     if (invalidChild == expectedChild) {
         throw new Error(`invalidChild are the same as expectedChild: ${invalidChild}`)
     }
-    const tx = await UpgradeProxy.connect(lessSecuredOperator).upgradeChild(invalidChild, expectedChildStatus)
+    const tx = await UpgradeProxy.connect(lessSecuredOperator).upgradeChild(invalidChild, true)
     console.log(`upgradeChild tx sent: ${tx.hash}`)
     console.log("This should trigger Sentinel...")
     await tx.wait()

@@ -36,10 +36,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.handler = exports.expectedChildStatus = exports.expectedChild = void 0;
+exports.handler = exports.expectedChild = void 0;
 var ethers_1 = require("ethers");
 exports.expectedChild = "0x0000000000000000000000000000000000000bbb";
-exports.expectedChildStatus = true;
 function handler(event) {
     return __awaiter(this, void 0, void 0, function () {
         var contractAddr, _a, alchemyApiToken, sentinelPrivKey, url, provider, sentinel, pauseFuncSig, matchReasons, _i, matchReasons_1, r;
@@ -52,15 +51,15 @@ function handler(event) {
                     provider = new ethers_1.ethers.providers.JsonRpcProvider(url);
                     sentinel = new ethers_1.ethers.Wallet(sentinelPrivKey, provider);
                     pauseFuncSig = "0x8456cb59";
-                    if (!(event.request.body.transaction.status == '0x1')) return [3 /*break*/, 6];
+                    if (!(event.request.body.transaction.status == '0x1')) return [3 /*break*/, 4];
                     matchReasons = event.request.body.matchReasons;
                     _i = 0, matchReasons_1 = matchReasons;
                     _b.label = 1;
                 case 1:
-                    if (!(_i < matchReasons_1.length)) return [3 /*break*/, 6];
+                    if (!(_i < matchReasons_1.length)) return [3 /*break*/, 4];
                     r = matchReasons_1[_i];
-                    if (!((r.type == "event") && (r.signature.startsWith("SetChildStatus")))) return [3 /*break*/, 3];
-                    if (!(r.params.enable != exports.expectedChildStatus)) return [3 /*break*/, 3];
+                    if (!((r.type == "function") && (r.signature.startsWith("upgradeChild")))) return [3 /*break*/, 3];
+                    if (!(r.params._newChildAddr != exports.expectedChild)) return [3 /*break*/, 3];
                     return [4 /*yield*/, sentinel.sendTransaction({
                             to: contractAddr,
                             data: pauseFuncSig
@@ -69,19 +68,9 @@ function handler(event) {
                     _b.sent();
                     _b.label = 3;
                 case 3:
-                    if (!((r.type == "function") && (r.signature.startsWith("upgradeChild")))) return [3 /*break*/, 5];
-                    if (!(r.params._newChildAddr != exports.expectedChild)) return [3 /*break*/, 5];
-                    return [4 /*yield*/, sentinel.sendTransaction({
-                            to: contractAddr,
-                            data: pauseFuncSig
-                        })];
-                case 4:
-                    _b.sent();
-                    _b.label = 5;
-                case 5:
                     _i++;
                     return [3 /*break*/, 1];
-                case 6: return [2 /*return*/, {}];
+                case 4: return [2 /*return*/, {}];
             }
         });
     });
