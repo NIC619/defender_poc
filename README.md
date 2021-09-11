@@ -66,9 +66,9 @@ Duties of each role:
 
 ## Detect and response conditions
 
-- If `setAllowance` sets allowance for unexpected address(es), `pause` the contract immediately
-    - we would have to maintain the expected address(es) in the `Autotask` scritps
-        - remeber to update the expected address(es) before doing actual upgrade otherwise it would accidentally `pause` the contract once you upgrade
+- If `setAllowance` sets allowance of unexpected token(s), `pause` the contract immediately
+    - we would have to maintain the expected token(s) in the `Autotask` scritps
+        - remeber to update the expected token(s) before doing actual upgrade otherwise it would accidentally `pause` the contract once you upgrade
 - If `setImportantParam` is set to unexpected values, `pause` the contract immediately
     - the same as above, we have to maintain the expected values
 - If `upgradeChild` upgrade child contract to an unexpected address, `pause` the contract immediately
@@ -126,7 +126,11 @@ After contracts are deployed, go set up `Sentinel` and `Autotask` instances.
         - `npx hardhat run scripts/upgradeProxyImpl/upgradeTo_UpgradeProxyImplementation.ts --network kovan`
         - invoke failed internal function call
             - `npx hardhat run scripts/upgradeProxyImpl/fail/fail_internal_upgrade_UpgradeProxyImplementation.ts --network kovan`
-
+- Scripts to trigger sentinel, for example
+    - trigger by `setAllowance` of unexpected token(s)
+        - `npx hardhat run scripts/allowance/trigger_sentinel/invalid_token_addr_setAllowance.ts --network kovan`
+    - trigger by `upgradeChild` to unexpected address(es)
+        - `npx hardhat run scripts/maintenance/trigger_sentinel/invalid_child_upgradeChild.ts --network kovan`
 ___
 
 ## Deployed contract addresses

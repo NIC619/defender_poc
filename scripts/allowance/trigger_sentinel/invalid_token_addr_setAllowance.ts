@@ -1,6 +1,5 @@
 import {  ethers } from "hardhat"
-import { default as prompts } from "prompts"
-import { defaultInvalidAllowanceTokenAddr, defaultValidAllowanceTokenAddr, getContractAndOperators } from "../../utils"
+import { defaultInvalidAllowanceTokenAddr, getContractAndOperators } from "../../utils"
 
 async function main() {
     const [OneRoleAccessControl, , lessSecuredOperator, ] = await getContractAndOperators("OneRoleAccessControl")

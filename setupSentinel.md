@@ -20,6 +20,6 @@
 
 5. Last, create notifications and set notification thresholds
     - for example, using [Slack webhook](https://api.slack.com/messaging/webhooks)
-    - you can use the default threshold valus which will send notification on every matched event/function call
+    - you can use the default threshold values which will send notification on every matched event/function call
 
 ![](./imgs/sentinel_notifications.png)
