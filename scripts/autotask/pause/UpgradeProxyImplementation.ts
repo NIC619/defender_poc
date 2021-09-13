@@ -1,13 +1,11 @@
 import { ethers } from "ethers"
+import { Relayer } from "defender-relay-client"
 
 export const expectedChild = "0x0000000000000000000000000000000000000bbb"
 
 export async function handler(event) {
+    const relayer = new Relayer(event)
     const contractAddr = event.request.body.sentinel.address
-    const { alchemyApiToken, sentinelPrivKey } = event.secrets
-    const url = `https://eth-kovan.alchemyapi.io/v2/${alchemyApiToken}`
-    const provider = new ethers.providers.JsonRpcProvider(url)
-    const sentinel = new ethers.Wallet(sentinelPrivKey, provider)
 
     const pauseFuncSig = "0x8456cb59"
 
@@ -17,9 +15,10 @@ export async function handler(event) {
             if ((r.type == "function") && (r.signature.startsWith("upgradeChild"))) {
                 // Pause the contract if child set to an unexpected addresses
                 if (r.params._newChildAddr != expectedChild) {
-                    await sentinel.sendTransaction({
+                    await relayer.sendTransaction({
                         to: contractAddr,
-                        data: pauseFuncSig
+                        data: pauseFuncSig,
+                        gasLimit: 100000
                     })
                 }
             }

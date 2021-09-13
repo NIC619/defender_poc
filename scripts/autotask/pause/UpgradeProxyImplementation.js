@@ -37,36 +37,34 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 exports.handler = exports.expectedChild = void 0;
-var ethers_1 = require("ethers");
+var defender_relay_client_1 = require("defender-relay-client");
 exports.expectedChild = "0x0000000000000000000000000000000000000bbb";
 function handler(event) {
     return __awaiter(this, void 0, void 0, function () {
-        var contractAddr, _a, alchemyApiToken, sentinelPrivKey, url, provider, sentinel, pauseFuncSig, matchReasons, _i, matchReasons_1, r;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
+        var relayer, contractAddr, pauseFuncSig, matchReasons, _i, matchReasons_1, r;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
                 case 0:
+                    relayer = new defender_relay_client_1.Relayer(event);
                     contractAddr = event.request.body.sentinel.address;
-                    _a = event.secrets, alchemyApiToken = _a.alchemyApiToken, sentinelPrivKey = _a.sentinelPrivKey;
-                    url = "https://eth-kovan.alchemyapi.io/v2/" + alchemyApiToken;
-                    provider = new ethers_1.ethers.providers.JsonRpcProvider(url);
-                    sentinel = new ethers_1.ethers.Wallet(sentinelPrivKey, provider);
                     pauseFuncSig = "0x8456cb59";
                     if (!(event.request.body.transaction.status == '0x1')) return [3 /*break*/, 4];
                     matchReasons = event.request.body.matchReasons;
                     _i = 0, matchReasons_1 = matchReasons;
-                    _b.label = 1;
+                    _a.label = 1;
                 case 1:
                     if (!(_i < matchReasons_1.length)) return [3 /*break*/, 4];
                     r = matchReasons_1[_i];
                     if (!((r.type == "function") && (r.signature.startsWith("upgradeChild")))) return [3 /*break*/, 3];
                     if (!(r.params._newChildAddr != exports.expectedChild)) return [3 /*break*/, 3];
-                    return [4 /*yield*/, sentinel.sendTransaction({
+                    return [4 /*yield*/, relayer.sendTransaction({
                             to: contractAddr,
-                            data: pauseFuncSig
+                            data: pauseFuncSig,
+                            gasLimit: 100000
                         })];
                 case 2:
-                    _b.sent();
-                    _b.label = 3;
+                    _a.sent();
+                    _a.label = 3;
                 case 3:
                     _i++;
                     return [3 /*break*/, 1];

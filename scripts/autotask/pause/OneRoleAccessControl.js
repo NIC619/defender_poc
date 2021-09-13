@@ -37,20 +37,17 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 exports.handler = exports.importantParamUpperBound = exports.importantParamLowerBound = void 0;
-var ethers_1 = require("ethers");
+var defender_relay_client_1 = require("defender-relay-client");
 exports.importantParamLowerBound = 30;
 exports.importantParamUpperBound = 80;
 function handler(event) {
     return __awaiter(this, void 0, void 0, function () {
-        var contractAddr, _a, alchemyApiToken, sentinelPrivKey, url, provider, sentinel, pauseFuncSig, expectedAllowanceTokenList, paused, matchReasons, _i, matchReasons_1, r, _b, _c, addr;
-        return __generator(this, function (_d) {
-            switch (_d.label) {
+        var relayer, contractAddr, pauseFuncSig, expectedAllowanceTokenList, paused, matchReasons, _i, matchReasons_1, r, _a, _b, addr;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
                 case 0:
+                    relayer = new defender_relay_client_1.Relayer(event);
                     contractAddr = event.request.body.sentinel.address;
-                    _a = event.secrets, alchemyApiToken = _a.alchemyApiToken, sentinelPrivKey = _a.sentinelPrivKey;
-                    url = "https://eth-kovan.alchemyapi.io/v2/" + alchemyApiToken;
-                    provider = new ethers_1.ethers.providers.JsonRpcProvider(url);
-                    sentinel = new ethers_1.ethers.Wallet(sentinelPrivKey, provider);
                     pauseFuncSig = "0x8456cb59";
                     expectedAllowanceTokenList = [
                         "0x0000000000000000000000000000000000000aaa",
@@ -61,7 +58,7 @@ function handler(event) {
                     if (!(event.request.body.transaction.status == '0x1')) return [3 /*break*/, 9];
                     matchReasons = event.request.body.matchReasons;
                     _i = 0, matchReasons_1 = matchReasons;
-                    _d.label = 1;
+                    _c.label = 1;
                 case 1:
                     if (!(_i < matchReasons_1.length)) return [3 /*break*/, 9];
                     r = matchReasons_1[_i];
@@ -69,33 +66,39 @@ function handler(event) {
                         return [3 /*break*/, 9];
                     if (!((r.type == "function") && (r.signature.startsWith("setImportantParam")))) return [3 /*break*/, 4];
                     if (!((r.params._importantParam < exports.importantParamLowerBound) || (r.params._importantParam > exports.importantParamUpperBound))) return [3 /*break*/, 3];
-                    return [4 /*yield*/, sentinel.sendTransaction({
+                    // await sentinel.sendTransaction({
+                    return [4 /*yield*/, relayer.sendTransaction({
                             to: contractAddr,
-                            data: pauseFuncSig
+                            data: pauseFuncSig,
+                            gasLimit: 100000
                         })];
                 case 2:
-                    _d.sent();
+                    // await sentinel.sendTransaction({
+                    _c.sent();
                     paused = true;
                     return [3 /*break*/, 9];
                 case 3: return [3 /*break*/, 8];
                 case 4:
                     if (!((r.type == "function") && (r.signature.startsWith("setAllowance")))) return [3 /*break*/, 8];
-                    _b = 0, _c = r.params._tokenList;
-                    _d.label = 5;
+                    _a = 0, _b = r.params._tokenList;
+                    _c.label = 5;
                 case 5:
-                    if (!(_b < _c.length)) return [3 /*break*/, 8];
-                    addr = _c[_b];
+                    if (!(_a < _b.length)) return [3 /*break*/, 8];
+                    addr = _b[_a];
                     if (!!expectedAllowanceTokenList.includes(addr)) return [3 /*break*/, 7];
-                    return [4 /*yield*/, sentinel.sendTransaction({
+                    // await sentinel.sendTransaction({
+                    return [4 /*yield*/, relayer.sendTransaction({
                             to: contractAddr,
-                            data: pauseFuncSig
+                            data: pauseFuncSig,
+                            gasLimit: 100000
                         })];
                 case 6:
-                    _d.sent();
+                    // await sentinel.sendTransaction({
+                    _c.sent();
                     paused = true;
                     return [3 /*break*/, 8];
                 case 7:
-                    _b++;
+                    _a++;
                     return [3 /*break*/, 5];
                 case 8:
                     _i++;
