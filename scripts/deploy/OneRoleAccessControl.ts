@@ -1,12 +1,12 @@
 import { ethers } from "hardhat"
-import { defaultImportantDependency, defaultParam, getDeployer, getErrandOperator, getLessSecuredOperator, getMoreSecuredOperator, getSentinel } from "../utils"
+import { defaultImportantDependency, defaultParam, getDeployer, getErrandOperator, getLessSecuredOperator, getMoreSecuredOperator, getSentinelAddr } from "../utils"
 
 async function main() {
     const deployer = getDeployer()
     const moreSecuredOperator = getMoreSecuredOperator()
     const lessSecuredOperator = getLessSecuredOperator()
     const errandOperator = getErrandOperator()
-    const sentinel = getSentinel()
+    const sentinelAddr = getSentinelAddr()
 
     // Deploying OneRoleAccessControl
     console.log("Deploying OneRoleAccessControl...")
@@ -16,7 +16,7 @@ async function main() {
         moreSecuredOperator.address,
         lessSecuredOperator.address,
         errandOperator.address,
-        sentinel.address
+        sentinelAddr
     )
     await OneRoleAccessControl.deployTransaction.wait()
     console.log(`OneRoleAccessControl contract address: ${OneRoleAccessControl.address}`)

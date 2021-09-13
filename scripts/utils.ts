@@ -36,13 +36,12 @@ export const getErrandOperator = () => {
     return errandOperator
 }
 
-export const getSentinel = () => {
-    const sentinelPrivateKey = process.env.SENTINEL_PRIVATE_KEY
-    if (sentinelPrivateKey === undefined) throw Error("Sentinel private key not provided")
+export const getSentinelAddr = () => {
+    // Use Defender Relayer as the Sentinel
+    const sentinelAddr = process.env.DEFENDER_RELAYER_ADDRESS
+    if (sentinelAddr === undefined) throw Error("Sentinel address not provided")
 
-    const sentinel = new ethers.Wallet(sentinelPrivateKey, ethers.provider)
-
-    return sentinel
+    return sentinelAddr
 }
 
 export const getContractAndOperators = async (contractName: string) => {

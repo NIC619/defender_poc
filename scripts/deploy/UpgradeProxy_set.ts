@@ -1,12 +1,12 @@
 import { ethers } from "hardhat"
-import { getDeployer, getErrandOperator, getLessSecuredOperator, getMoreSecuredOperator, getSentinel } from "../utils"
+import { getDeployer, getErrandOperator, getLessSecuredOperator, getMoreSecuredOperator, getSentinelAddr } from "../utils"
 
 async function main() {
     const deployer = getDeployer()
     const moreSecuredOperator = getMoreSecuredOperator()
     const lessSecuredOperator = getLessSecuredOperator()
     const errandOperator = getErrandOperator()
-    const sentinel = getSentinel()
+    const sentinelAddr = getSentinelAddr()
 
     // Deploying UpgradeProxyImplementation
     console.log("Deploying UpgradeProxyImplementation...")
@@ -26,7 +26,7 @@ async function main() {
         UpgradeProxyImplementation.interface.encodeFunctionData("initialize", [
             lessSecuredOperator.address,
             errandOperator.address,
-            sentinel.address
+            sentinelAddr
         ])
     )
     await UpgradeProxy.deployTransaction.wait()
