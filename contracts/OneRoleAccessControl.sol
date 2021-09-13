@@ -69,6 +69,7 @@ contract OneRoleAccessControl {
 
     function setNewSentinel(address _newSentinel) external onlyMoreSecuredOperator {
         require(_newSentinel != address(0), "OneRoleAccessControl: sentinel can not be zero address");
+        sentinel = _newSentinel;
 
         emit SetNewSentinel(_newSentinel);
     }

@@ -106,6 +106,6 @@ export const upgradeProxyAddr = "0xd4c037782a1D181701e697ad80aB56A40c6be9Bb"
 
 export const upgradeProxyImplementationAddr = "0x1E0D76E9556a8089cdb3822436104378E3572103"
 
-export const oneRoleAccessControlAddr = "0xa88efB15C2980f5eC7a189C2CcdEC3cf3d3BBb1c"
+export const oneRoleAccessControlAddr = "0x4Ed59b1E11E1460f4Ff5c5ae2895d7bd7c93E713"
 
 export const oneRoleAccessControlWithTimeLockAddr = "0x0d975AEB0ee9EFd0682A303987aF2018e2917189"
