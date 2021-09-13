@@ -1,21 +1,16 @@
 ## Set up Autotask instances
 
 1. Go to https://defender.openzeppelin.com/#/autotask and sign up
-2. Hit the `Secrets` button and then the `New secret` button to add secrets like private key or RPC api key
-    - Note that saving private key as secrets in Autotask is not 100% safe since you might accidentally print out these secrets during debugging of `Autotask` script
-    - as Openzeppelin suggested, you should use the `Relayer` service to control your EOA
-    - Note that the `sentinel` referred here in `Autotask` scripts refers to the role `sentinel` in our settings, not the `Sentinel` service
-
-![](./imgs/autotask_secrets1.png)
-![](./imgs/autotask_secrets2.png)
-
+2. To set up an account that executes tasks/transactions instructed in our Autotask scripts, we have two choices: **use our own EOA** or **use a `Relayer` instance**
+    - Here we will use relayer, go [set up a Relayer instance](./setupRelayer.md) 
 
 3. Back to `Autotask` dashboard and hit the `Create Autotask` button to create new Autotask instnace
 
 ![](./imgs/autotask_create1.png)
 
 4. Input instance name, choose `Webhook` as trigger
-5. Paste the `Autotask` scripts to `Code` section and hit `Create` button
+5. In `Connect to a relayer` section, select the name of the relayer instance you created
+6. Paste the `Autotask` scripts to `Code` section and hit `Create` button
 - `pause` contract [script](./scripts/autotask/pause/OneRoleAccessControl.js) for `OneRoleAccessControl` contract
 - `pause` contract [script](./scripts/autotask/pause/UpgradeProxyImplementation.js) for `UpgradeProxyImplementation` contract
 - Note that these javscritp scripts are compiled from its original one written in typescript
@@ -23,7 +18,8 @@
 
 ![](./imgs/autotask_create2.png)
 
-6. You are all set, go invoke functions and see if scripts are executed as expected.
+7. You are all set, go invoke functions and see if scripts are executed as expected.
+
 
 ___
 
@@ -38,3 +34,7 @@ ___
     - you can `console.log` in your script and they will show up in `Logs` section
 
 ![](./imgs/autotask_run_info.png)
+
+___
+
+More about `Autotask` service: https://docs.openzeppelin.com/defender/autotasks

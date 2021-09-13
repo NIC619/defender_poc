@@ -23,3 +23,7 @@
     - you can use the default threshold values which will send notification on every matched event/function call
 
 ![](./imgs/sentinel_notifications.png)
+
+___
+
+More about `Sentinel` service: https://docs.openzeppelin.com/defender/sentinel
