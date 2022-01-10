@@ -7,18 +7,18 @@
     "compile": "hardhat clean && hardhat compile"
   },
   "devDependencies": {
-    "@nomiclabs/hardhat-ethers": "^2.0.2",
-    "@openzeppelin/contracts": "3.3.0",
+    "@nomiclabs/hardhat-ethers": "^2.0.4",
+    "@openzeppelin/contracts": "^4.4.1",
     "@types/node": "^16.7.13",
-    "ethers": "^5.4.5",
-    "hardhat": "^2.6.1"
+    "ethers": "^5.5.3",
+    "hardhat": "^2.8.2"
   },
   "dependencies": {
     "defender-relay-client": "^1.11.1",
     "dotenv": "^10.0.0",
     "prompts": "^2.4.1",
-    "ts-node": "^10.0.0",
-    "tsconfig-paths": "^3.9.0",
+    "ts-node": "^10.4.0",
+    "tsconfig-paths": "^3.12.0",
     "typescript": "^4.3.4"
   }
 }
